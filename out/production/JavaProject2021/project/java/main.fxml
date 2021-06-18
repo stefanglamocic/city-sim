@@ -7,27 +7,27 @@
 <?import javafx.scene.text.Font?>
 <BorderPane fx:controller="project.java.Controller" xmlns:fx="http://javafx.com/fxml">
     <top>
-        <FlowPane fx:id="fpTop" orientation="HORIZONTAL" style="-fx-background-color: gray"
+        <FlowPane fx:id="fpTop" orientation="HORIZONTAL" style="-fx-background-color: green"
             prefHeight="40"/>
     </top>
 
     <bottom>
-        <FlowPane fx:id="fpBottom" orientation="HORIZONTAL" style="-fx-background-color: gray"
+        <FlowPane fx:id="fpBottom" orientation="HORIZONTAL" style="-fx-background-color: green"
         prefHeight="40" vgap="3" hgap="3"/>
     </bottom>
 
     <left>
-        <FlowPane fx:id="fpLeft" orientation="VERTICAL" style="-fx-background-color: gray"
+        <FlowPane fx:id="fpLeft" orientation="VERTICAL" style="-fx-background-color: green"
         prefWidth="40" vgap="3" hgap="3"/>
     </left>
 
     <right>
-        <FlowPane fx:id="fpRight" orientation="VERTICAL" style="-fx-background-color: gray"
+        <FlowPane fx:id="fpRight" orientation="VERTICAL" style="-fx-background-color: green"
         prefWidth="40" vgap="3" hgap="3"/>
     </right>
 
     <center>
-        <GridPane fx:id="gridPane" vgap="0" hgap="0" prefWidth="960" prefHeight="960">
+        <GridPane fx:id="gridPane" vgap="0.3" hgap="0.3" prefWidth="960" prefHeight="960">
 
         </GridPane>
     </center>

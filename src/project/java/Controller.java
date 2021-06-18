@@ -88,6 +88,31 @@ public class Controller {
         }
         for(int i = 0; i < 11; i++)
             setStackPaneColor(5, 6 + i, color);
+        for(int i = 0; i < 8; i++)
+            setStackPaneColor(19, 6 + i, color);
+        for(int i = 0; i < 7; i++)
+            setStackPaneColor(20, 12 + i, color);
+        for(int i = 0; i < 9; i++)
+            setStackPaneColor(26, 18 + i, color);
+        for(int i = 0; i < 5; i++)
+            setStackPaneColor(25 - i, 18, color);
+        for(int i = 0; i < 3; i++) {
+            setStackPaneColor(29 - i, 25, color);
+            setStackPaneColor(26, 9 + i, color);
+        }
+        for(int i = 0; i < 4; i++)
+            setStackPaneColor(28, 6 + i, color);
+        for(int i = 0; i < 2; i++) {
+            setStackPaneColor(3 + i, 16, color);
+            setStackPaneColor(22, 2 + i, color);
+            setStackPaneColor(23, 3 + i, color);
+        }
+        for(int i = 0; i < 6; i++){
+            setStackPaneColor(27 - i, 1, color);
+            setStackPaneColor(28 - i, 5, color);
+            setStackPaneColor(26 - i, 12, color);
+        }
+        setStackPaneColor(27, 9, color);
     }
 
     private void setStackPaneColor(int i, int j, String color){
