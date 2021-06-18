@@ -8,35 +8,26 @@
 <BorderPane fx:controller="project.java.Controller" xmlns:fx="http://javafx.com/fxml">
     <top>
         <FlowPane fx:id="fpTop" orientation="HORIZONTAL" style="-fx-background-color: gray"
-            prefHeight="70">
-
-        </FlowPane>
+            prefHeight="40"/>
     </top>
 
     <bottom>
-        <FlowPane orientation="HORIZONTAL" style="-fx-background-color: gray"
-        prefHeight="70" vgap="3" hgap="3">
-
-        </FlowPane>
+        <FlowPane fx:id="fpBottom" orientation="HORIZONTAL" style="-fx-background-color: gray"
+        prefHeight="40" vgap="3" hgap="3"/>
     </bottom>
 
     <left>
-        <FlowPane orientation="VERTICAL" style="-fx-background-color: gray"
-        prefWidth="70" vgap="3" hgap="3">
-
-        </FlowPane>
+        <FlowPane fx:id="fpLeft" orientation="VERTICAL" style="-fx-background-color: gray"
+        prefWidth="40" vgap="3" hgap="3"/>
     </left>
 
     <right>
-        <FlowPane orientation="VERTICAL" style="-fx-background-color: gray"
-        prefWidth="70" vgap="3" hgap="3">
-
-        </FlowPane>
+        <FlowPane fx:id="fpRight" orientation="VERTICAL" style="-fx-background-color: gray"
+        prefWidth="40" vgap="3" hgap="3"/>
     </right>
 
     <center>
-        <GridPane fx:id="gridPane" vgap="0" hgap="0" gridLinesVisible="true"
-            style="-fx-background-color: green">
+        <GridPane fx:id="gridPane" vgap="0" hgap="0" prefWidth="960" prefHeight="960">
 
         </GridPane>
     </center>
