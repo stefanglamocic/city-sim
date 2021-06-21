@@ -1,6 +1,9 @@
 package project.java;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -27,6 +30,7 @@ public class Controller {
         generateRoads(StylesCSS.BLUE);
         generateRailroads(StylesCSS.GRAY);
         generateCrossroads(StylesCSS.BLACK);
+        generateTrainStations();
 
 
 //        Image image = new Image("assets/cars/car2.png");
@@ -117,5 +121,58 @@ public class Controller {
 
     private void setStackPaneColor(int i, int j, String color){
         stackPanes[i][j].setStyle(color);
+    }
+
+    private void generateTrainStations(){
+        Insets insets = new Insets(0,0,5,5);
+        //Train station A:
+        Label a = new Label("A");
+        setStackPaneColor(1, 28, StylesCSS.GRAY_THIRD);
+        stackPanes[1][28].getChildren().add(a);
+        StackPane.setAlignment(a, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(a, insets);
+        setStackPaneColor(2, 27, StylesCSS.GRAY_SECOND);
+        setStackPaneColor(1, 27, StylesCSS.GRAY_FIRST);
+        setStackPaneColor(2, 28, StylesCSS.GRAY_FOURTH);
+
+        //Train station B:
+        Label b = new Label("B");
+        setStackPaneColor(6, 6, StylesCSS.GRAY_THIRD);
+        stackPanes[6][6].getChildren().add(b);
+        StackPane.setAlignment(b, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(b, insets);
+        setStackPaneColor(7, 5, StylesCSS.GRAY_SECOND);
+        setStackPaneColor(6, 5, StylesCSS.GRAY_FIRST);
+        setStackPaneColor(7, 6, StylesCSS.GRAY_FOURTH);
+
+        //Train station C:
+        Label c = new Label("C");
+        setStackPaneColor(19, 13, StylesCSS.GRAY_THIRD);
+        stackPanes[19][13].getChildren().add(c);
+        StackPane.setAlignment(c, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(c, insets);
+        setStackPaneColor(20, 12, StylesCSS.GRAY_SECOND);
+        setStackPaneColor(19, 12, StylesCSS.GRAY_FIRST);
+        setStackPaneColor(20, 13, StylesCSS.GRAY_FOURTH);
+
+        //Train station D:
+        Label d = new Label("D");
+        setStackPaneColor(26, 2, StylesCSS.GRAY_THIRD);
+        stackPanes[26][2].getChildren().add(d);
+        StackPane.setAlignment(d, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(d, insets);
+        setStackPaneColor(27, 1, StylesCSS.GRAY_SECOND);
+        setStackPaneColor(26, 1, StylesCSS.GRAY_FIRST);
+        setStackPaneColor(27, 2, StylesCSS.GRAY_FOURTH);
+
+        //Train station E:
+        Label e = new Label("E");
+        setStackPaneColor(25, 26, StylesCSS.GRAY_THIRD);
+        stackPanes[25][26].getChildren().add(e);
+        StackPane.setAlignment(e, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(e, insets);
+        setStackPaneColor(26, 25, StylesCSS.GRAY_SECOND);
+        setStackPaneColor(25, 25, StylesCSS.GRAY_FIRST);
+        setStackPaneColor(26, 26, StylesCSS.GRAY_FOURTH);
     }
 }
