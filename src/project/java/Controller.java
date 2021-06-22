@@ -4,11 +4,11 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import project.java.datamodel.Images;
 import project.java.datamodel.StylesCSS;
 
 public class Controller {
@@ -24,23 +24,29 @@ public class Controller {
     private GridPane gridPane;
     private StackPane[][] stackPanes = new StackPane[30][30];
 
+
     @FXML
     public void initialize(){
         populateGridPane();
-        generateRoads(StylesCSS.BLUE);
-        generateRailroads(StylesCSS.GRAY);
-        generateCrossroads(StylesCSS.BLACK);
+        generateRoads();
+        generateRailroads();
+        generateCrossroads();
         generateTrainStations();
 
 
 //        Image image = new Image("assets/cars/car2.png");
-//        Image image2 = new Image("assets/cars/car1.png");
 //        ImageView imgView = new ImageView(image);
-//        Image image3 = new Image("assets/trains/train.png");
-//        fpTop.getChildren().add(new ImageView(image));
+//        imgView.setFitHeight(27);
+//        imgView.setPreserveRatio(true);
+//        imgView.setSmooth(true);
+//        imgView.setRotate(90);
+//
+//        fpTop.getChildren().add(imgView);
+
 //        fpTop.getChildren().add(new ImageView(image2));
 //        fpBottom.getChildren().add(new ImageView(image2));
-//        stackPanes[14][1].getChildren().add(imgView);
+        //imgView.setVisible(false);
+//        stackPanes[13][1].getChildren().add(imgView);
     }
 
     private void populateGridPane(){
@@ -55,7 +61,8 @@ public class Controller {
         }
     }
 
-    private void generateRoads(String color){
+    private void generateRoads(){
+        String color = StylesCSS.BLUE;
         for(int i = 0; i < 30; i++){
             setStackPaneColor(13, i, color);
             setStackPaneColor(14, i, color);
@@ -76,7 +83,8 @@ public class Controller {
         }
     }
 
-    private void generateCrossroads(String color){
+    private void generateCrossroads(){
+        String color = StylesCSS.BLACK;
         setStackPaneColor(13, 6, color);
         setStackPaneColor(14, 6, color);
         setStackPaneColor(26, 20, color);
@@ -85,7 +93,8 @@ public class Controller {
         setStackPaneColor(2, 21, color);
     }
 
-    private void generateRailroads(String color){
+    private void generateRailroads(){
+        String color = StylesCSS.GRAY;
         for(int i = 0; i < 14; i++){
             setStackPaneColor(2, 29 - i, color);
             setStackPaneColor(6 + i, 6, color);
@@ -123,17 +132,57 @@ public class Controller {
         stackPanes[i][j].setStyle(color);
     }
 
+    private void setStationImage(int quadrant, int i, int j){
+        ImageView view = new ImageView();
+        view.setFitWidth(27);
+        view.setPreserveRatio(true);
+        view.setSmooth(true);
+        switch (quadrant) {
+            case 1: {
+                view.setImage(Images.imgStation1);
+                StackPane.setAlignment(view, Pos.BOTTOM_RIGHT);
+            }
+            break;
+            case 2:
+            {
+                view.setImage(Images.imgStation2);
+                StackPane.setAlignment(view, Pos.BOTTOM_LEFT);
+            }
+                break;
+            case 3:
+            {
+                view.setImage(Images.imgStation3);
+                StackPane.setAlignment(view, Pos.TOP_RIGHT);
+            }
+                break;
+            case 4:
+            {
+                view.setImage(Images.imgStation4);
+                StackPane.setAlignment(view, Pos.TOP_LEFT);
+            }
+                break;
+            default:
+                break;
+        }
+        stackPanes[i][j].getChildren().add(view);
+    }
+
     private void generateTrainStations(){
         Insets insets = new Insets(0,0,5,5);
+
         //Train station A:
         Label a = new Label("A");
         setStackPaneColor(1, 28, StylesCSS.GRAY_THIRD);
         stackPanes[1][28].getChildren().add(a);
+        setStationImage(3, 1, 28);
         StackPane.setAlignment(a, Pos.BOTTOM_LEFT);
         StackPane.setMargin(a, insets);
         setStackPaneColor(2, 27, StylesCSS.GRAY_SECOND);
+        setStationImage(2, 2, 27);
         setStackPaneColor(1, 27, StylesCSS.GRAY_FIRST);
+        setStationImage(1, 1, 27);
         setStackPaneColor(2, 28, StylesCSS.GRAY_FOURTH);
+        setStationImage(4, 2, 28);
 
         //Train station B:
         Label b = new Label("B");
@@ -141,9 +190,13 @@ public class Controller {
         stackPanes[6][6].getChildren().add(b);
         StackPane.setAlignment(b, Pos.BOTTOM_LEFT);
         StackPane.setMargin(b, insets);
+        setStationImage(3, 6, 6);
         setStackPaneColor(7, 5, StylesCSS.GRAY_SECOND);
+        setStationImage(2, 7, 5);
         setStackPaneColor(6, 5, StylesCSS.GRAY_FIRST);
+        setStationImage(1, 6, 5);
         setStackPaneColor(7, 6, StylesCSS.GRAY_FOURTH);
+        setStationImage(4, 7, 6);
 
         //Train station C:
         Label c = new Label("C");
@@ -151,9 +204,13 @@ public class Controller {
         stackPanes[19][13].getChildren().add(c);
         StackPane.setAlignment(c, Pos.BOTTOM_LEFT);
         StackPane.setMargin(c, insets);
+        setStationImage(3, 19, 13);
         setStackPaneColor(20, 12, StylesCSS.GRAY_SECOND);
+        setStationImage(2, 20, 12);
         setStackPaneColor(19, 12, StylesCSS.GRAY_FIRST);
+        setStationImage(1, 19, 12);
         setStackPaneColor(20, 13, StylesCSS.GRAY_FOURTH);
+        setStationImage(4, 20, 13);
 
         //Train station D:
         Label d = new Label("D");
@@ -161,9 +218,13 @@ public class Controller {
         stackPanes[26][2].getChildren().add(d);
         StackPane.setAlignment(d, Pos.BOTTOM_LEFT);
         StackPane.setMargin(d, insets);
+        setStationImage(3, 26, 2);
         setStackPaneColor(27, 1, StylesCSS.GRAY_SECOND);
+        setStationImage(2, 27, 1);
         setStackPaneColor(26, 1, StylesCSS.GRAY_FIRST);
+        setStationImage(1, 26, 1);
         setStackPaneColor(27, 2, StylesCSS.GRAY_FOURTH);
+        setStationImage(4, 27, 2);
 
         //Train station E:
         Label e = new Label("E");
@@ -171,8 +232,12 @@ public class Controller {
         stackPanes[25][26].getChildren().add(e);
         StackPane.setAlignment(e, Pos.BOTTOM_LEFT);
         StackPane.setMargin(e, insets);
+        setStationImage(3, 25, 26);
         setStackPaneColor(26, 25, StylesCSS.GRAY_SECOND);
+        setStationImage(2, 26, 25);
         setStackPaneColor(25, 25, StylesCSS.GRAY_FIRST);
+        setStationImage(1, 25, 25);
         setStackPaneColor(26, 26, StylesCSS.GRAY_FOURTH);
+        setStationImage(4, 26, 26);
     }
 }

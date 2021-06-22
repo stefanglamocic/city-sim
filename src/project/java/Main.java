@@ -13,6 +13,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         primaryStage.setTitle("Java 2021");
         primaryStage.setScene(new Scene(root, 1000, 1000));
+        //primaryStage.setResizable(false);
         primaryStage.show();
     }
 
