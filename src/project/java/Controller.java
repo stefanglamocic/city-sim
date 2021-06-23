@@ -22,7 +22,7 @@ public class Controller {
     private FlowPane fpRight;
     @FXML
     private GridPane gridPane;
-    private StackPane[][] stackPanes = new StackPane[30][30];
+    public static StackPane[][] stackPanes = new StackPane[30][30];
 
 
     @FXML
@@ -35,18 +35,18 @@ public class Controller {
 
 
 //        Image image = new Image("assets/cars/car2.png");
+
 //        ImageView imgView = new ImageView(image);
 //        imgView.setFitHeight(27);
 //        imgView.setPreserveRatio(true);
 //        imgView.setSmooth(true);
 //        imgView.setRotate(90);
 //
-//        fpTop.getChildren().add(imgView);
-
 //        fpTop.getChildren().add(new ImageView(image2));
 //        fpBottom.getChildren().add(new ImageView(image2));
         //imgView.setVisible(false);
-//        stackPanes[13][1].getChildren().add(imgView);
+
+//        stackPanes[13][1].getChildren().add(car);
     }
 
     private void populateGridPane(){
