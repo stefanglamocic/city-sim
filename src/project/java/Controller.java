@@ -9,6 +9,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import project.java.datamodel.Images;
+import project.java.datamodel.Position;
+import project.java.datamodel.Roads;
 import project.java.datamodel.StylesCSS;
 
 public class Controller {
@@ -34,10 +36,10 @@ public class Controller {
         generateTrainStations();
 
 
-//        Image image = new Image("assets/cars/car2.png");
-
+//        Image image = new Image("assets/cars/truck2.png");
+//
 //        ImageView imgView = new ImageView(image);
-//        imgView.setFitHeight(27);
+//        imgView.setFitHeight(30);
 //        imgView.setPreserveRatio(true);
 //        imgView.setSmooth(true);
 //        imgView.setRotate(90);
@@ -46,7 +48,7 @@ public class Controller {
 //        fpBottom.getChildren().add(new ImageView(image2));
         //imgView.setVisible(false);
 
-//        stackPanes[13][1].getChildren().add(car);
+//        stackPanes[13][1].getChildren().add(imgView);
     }
 
     private void populateGridPane(){
@@ -65,21 +67,37 @@ public class Controller {
         String color = StylesCSS.BLUE;
         for(int i = 0; i < 30; i++){
             setStackPaneColor(13, i, color);
+            Roads.add(Roads.upToDown, new Position(13, i));
             setStackPaneColor(14, i, color);
+            Roads.add(Roads.downToUp, new Position(14, i));
         }
 
         for(int i = 0; i < 9; i++){
             setStackPaneColor(i,20, color);
-            setStackPaneColor(i,21, color);
+            Roads.add(Roads.downToLeft, new Position(i, 20));
             setStackPaneColor(29 - i,20, color);
+            Roads.add(Roads.rightToDown, new Position(29 - i, 20));
+        }
+
+        for(int i = 0; i < 8; i++){
+            setStackPaneColor(i,21, color);
+            Roads.add(Roads.leftToDown, new Position(i, 21));
             setStackPaneColor(29 - i,21, color);
+            Roads.add(Roads.downToRight, new Position(29 - i, 21));
         }
 
         for(int i = 22; i < 30; i++){
             setStackPaneColor(7, i, color);
-            setStackPaneColor(8, i, color);
+            Roads.add(Roads.leftToDown, new Position(7, i));
             setStackPaneColor(29 - 7, i, color);
+            Roads.add(Roads.downToRight, new Position(22, i));
+        }
+
+        for(int i = 21; i < 30; i++){
+            setStackPaneColor(8, i, color);
+            Roads.add(Roads.downToLeft, new Position(8, i));
             setStackPaneColor(29 - 8, i, color);
+            Roads.add(Roads.rightToDown, new Position(21, i));
         }
     }
 

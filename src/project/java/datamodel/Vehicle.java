@@ -8,7 +8,6 @@ public abstract class Vehicle extends ImageView {
     protected String model;
     protected int modelYear;
     protected int speed;
-    private Image image;
 
     public Vehicle(String brand, String model, int modelYear, int speed, Image image) {
         this.brand = brand;
@@ -16,5 +15,8 @@ public abstract class Vehicle extends ImageView {
         this.modelYear = modelYear;
         this.speed = speed;
         setImage(image);
+        setFitHeight(30);
+        setPreserveRatio(true);
+        setSmooth(true);
     }
 }

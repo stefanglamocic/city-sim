@@ -1,18 +1,26 @@
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
-
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
 <BorderPane fx:controller="project.java.Controller" xmlns:fx="http://javafx.com/fxml">
     <top>
-        <FlowPane fx:id="fpTop" orientation="HORIZONTAL" style="-fx-background-color: green"
-            prefHeight="40"/>
+        <VBox>
+            <MenuBar>
+                <Menu text="Simulation">
+                    <MenuItem text="Start..."/>
+                </Menu>
+            </MenuBar>
+            <FlowPane fx:id="fpTop" style="-fx-background-color: green"
+                      prefHeight="40" vgap="3" hgap="3"/>
+        </VBox>
     </top>
 
     <bottom>
-        <FlowPane fx:id="fpBottom" orientation="HORIZONTAL" style="-fx-background-color: green"
+        <FlowPane fx:id="fpBottom" style="-fx-background-color: green"
         prefHeight="40" vgap="3" hgap="3"/>
     </bottom>
 
@@ -27,8 +35,6 @@
     </right>
 
     <center>
-        <GridPane fx:id="gridPane" vgap="0.3" hgap="0.3" prefWidth="960" prefHeight="960">
-
-        </GridPane>
+        <GridPane fx:id="gridPane" vgap="0.3" hgap="0.3" prefWidth="960" prefHeight="960"/>
     </center>
 </BorderPane>
