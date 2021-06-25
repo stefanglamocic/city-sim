@@ -34,7 +34,7 @@ public class Controller {
         generateTrainStations();
 
         Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
-        fpTop.getChildren().add(testCar);
+        fpLeft.getChildren().add(testCar);
 
         //System.out.println(fpTop.getChildren().contains(testCar));
         testCar.go();

@@ -28,15 +28,15 @@ public abstract class Vehicle extends ImageView implements Runnable{
         setPreserveRatio(true);
         setSmooth(true);
         thread = new Thread(this);
+        thread.setDaemon(true);
     }
 
     @Override
     public void run(){
         Random random = new Random();
-        LinkedList<Position> positionList = new LinkedList<>();
-        FlowPane destination = null;
         while(true){
-
+            LinkedList<Position> positionList = new LinkedList<>();
+            FlowPane destination = new FlowPane();
             if(controller.getFpTop().getChildren().contains(this)){
                 positionList = Roads.BFS(Roads.upToDownStart, Roads.upToDownEnd, Roads.upToDown);
                 destination = controller.getFpBottom();
@@ -50,25 +50,24 @@ public abstract class Vehicle extends ImageView implements Runnable{
                 destination = controller.getFpBottom();
             }
             else if(controller.getFpBottom().getChildren().contains(this)){
-                switch (random.nextInt(3) + 1){
+                int rng = random.nextInt(3) + 1;
+                System.out.println();
+                switch(rng){
                     case 1:
                     {
                         positionList = Roads.BFS(Roads.downToLeftStart, Roads.downToLeftEnd, Roads.downToLeft);
                         destination = controller.getFpLeft();
-                    }
-                        break;
+                    }break;
                     case 2:
                     {
                         positionList = Roads.BFS(Roads.downToUpStart, Roads.downToUpEnd, Roads.downToUp);
                         destination = controller.getFpTop();
-                    }
-                        break;
+                    }break;
                     case 3:
                     {
                         positionList = Roads.BFS(Roads.downToRightStart, Roads.downToRightEnd, Roads.downToRight);
                         destination = controller.getFpRight();
-                    }
-                        break;
+                    }break;
                 }
             }
 
@@ -89,6 +88,7 @@ public abstract class Vehicle extends ImageView implements Runnable{
 
             FlowPane finalDestination = destination;
             Platform.runLater(() -> finalDestination.getChildren().add(this));
+
         }
     }
 
