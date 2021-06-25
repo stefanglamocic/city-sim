@@ -2,7 +2,7 @@ package project.java.datamodel;
 
 import java.util.Objects;
 
-public class Position {
+public class Position{
     private int i;
     private int j;
     //dodati boolean za crossroad???
@@ -26,6 +26,11 @@ public class Position {
 
     public void setJ(int j) {
         this.j = j;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + i + "]" + "[" + j + "]";
     }
 
     @Override

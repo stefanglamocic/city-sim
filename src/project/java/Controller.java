@@ -13,6 +13,8 @@ import project.java.datamodel.Position;
 import project.java.datamodel.Roads;
 import project.java.datamodel.StylesCSS;
 
+import java.util.LinkedList;
+
 public class Controller {
     @FXML
     private FlowPane fpTop;
@@ -34,7 +36,6 @@ public class Controller {
         generateRailroads();
         generateCrossroads();
         generateTrainStations();
-
 
 //        Image image = new Image("assets/cars/truck2.png");
 //
