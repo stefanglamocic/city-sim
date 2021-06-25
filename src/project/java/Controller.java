@@ -4,16 +4,12 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import project.java.datamodel.Images;
-import project.java.datamodel.Position;
-import project.java.datamodel.Roads;
-import project.java.datamodel.StylesCSS;
-
-import java.util.LinkedList;
+import project.java.datamodel.*;
 
 public class Controller {
     @FXML
@@ -37,12 +33,20 @@ public class Controller {
         generateCrossroads();
         generateTrainStations();
 
+        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
+        fpTop.getChildren().add(testCar);
+
+        //System.out.println(fpTop.getChildren().contains(testCar));
+        testCar.go();
+
 //        Image image = new Image("assets/cars/truck2.png");
 //
 //        ImageView imgView = new ImageView(image);
 //        imgView.setFitHeight(30);
 //        imgView.setPreserveRatio(true);
 //        imgView.setSmooth(true);
+//
+//        fpTop.getChildren().add(imgView);
 //        imgView.setRotate(90);
 //
 //        fpTop.getChildren().add(new ImageView(image2));
@@ -259,4 +263,12 @@ public class Controller {
         setStackPaneColor(26, 26, StylesCSS.GRAY_FOURTH);
         setStationImage(4, 26, 26);
     }
+
+    public FlowPane getFpTop(){ return fpTop; }
+
+    public FlowPane getFpBottom(){ return fpBottom; }
+
+    public FlowPane getFpLeft(){ return fpLeft; }
+
+    public FlowPane getFpRight(){ return fpRight; }
 }

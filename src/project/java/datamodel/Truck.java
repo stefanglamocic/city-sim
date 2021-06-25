@@ -1,12 +1,13 @@
 package project.java.datamodel;
 
 import javafx.scene.image.Image;
+import project.java.Controller;
 
 public class Truck extends Vehicle{
     private int capacity;
 
-    public Truck(String brand, String model, int modelYear, int speed, Image image, int capacity) {
-        super(brand, model, modelYear, speed, image);
+    public Truck(String brand, String model, int modelYear, int speed, Image image, int capacity, Controller controller) {
+        super(brand, model, modelYear, speed, image, controller);
         this.capacity = capacity;
     }
 }
