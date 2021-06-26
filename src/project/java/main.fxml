@@ -11,7 +11,7 @@
         <VBox>
             <MenuBar>
                 <Menu text="Simulation">
-                    <MenuItem text="Start..."/>
+                    <MenuItem text="Start..." onAction="#startSimulation"/>
                 </Menu>
             </MenuBar>
             <FlowPane fx:id="fpTop" style="-fx-background-color: green"

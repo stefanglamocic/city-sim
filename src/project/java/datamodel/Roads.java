@@ -2,7 +2,6 @@ package project.java.datamodel;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 public class Roads {
@@ -32,11 +31,6 @@ public class Roads {
     public static void add(Set<Position> road, Position position){
         road.add(position);
     }
-
-    public static boolean contains(Set<Position> road, Position position){
-        return road.contains(position);
-    }
-
 
     public static LinkedList<Position> BFS(Position start, Position end, Set<Position> road){
         LinkedList<Position> queue = new LinkedList<>();

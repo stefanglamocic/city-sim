@@ -4,12 +4,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import project.java.datamodel.*;
+
+import java.util.LinkedList;
 
 public class Controller {
     @FXML
@@ -23,6 +24,8 @@ public class Controller {
     @FXML
     private GridPane gridPane;
     public static StackPane[][] stackPanes = new StackPane[30][30];
+    private LinkedList<? super Vehicle> vehicles = new LinkedList<>();
+    private boolean simulationStarted = false;
 
 
     @FXML
@@ -33,11 +36,21 @@ public class Controller {
         generateCrossroads();
         generateTrainStations();
 
-        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
-        fpLeft.getChildren().add(testCar);
-
-        //System.out.println(fpTop.getChildren().contains(testCar));
-        testCar.go();
+        Car testCar = new Car("Yugo", "Koral", 1995, 400, Images.imgCar1, 4, this);
+        Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
+        Car testCar3 = new Car("Yugo", "Koral", 1995, 300, Images.imgCar3, 4, this);
+        Car testCar4 = new Car("Yugo", "Koral", 1995, 250, Images.imgCar4, 4, this);
+        Car testCar5 = new Car("Fiat", "Fico", 1995, 400, Images.imgCar1, 4, this);
+        vehicles.add(testCar);
+        vehicles.add(testCar2);
+        vehicles.add(testCar3);
+        vehicles.add(testCar4);
+        vehicles.add(testCar5);
+        fpTop.getChildren().add(testCar);
+        fpTop.getChildren().add(testCar2);
+        fpBottom.getChildren().add(testCar3);
+        fpLeft.getChildren().add(testCar4);
+        fpRight.getChildren().add(testCar5);
 
 //        Image image = new Image("assets/cars/truck2.png");
 //
@@ -53,7 +66,6 @@ public class Controller {
 //        fpBottom.getChildren().add(new ImageView(image2));
         //imgView.setVisible(false);
 
-//        stackPanes[13][1].getChildren().add(imgView);
     }
 
     private void populateGridPane(){
@@ -271,4 +283,13 @@ public class Controller {
     public FlowPane getFpLeft(){ return fpLeft; }
 
     public FlowPane getFpRight(){ return fpRight; }
+
+    @FXML
+    public void startSimulation(){
+        if(!simulationStarted){
+            for(Object o : vehicles)
+                ((Vehicle)o).go();
+            simulationStarted = true;
+        }
+    }
 }
