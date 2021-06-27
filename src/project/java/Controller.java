@@ -23,7 +23,7 @@ public class Controller {
     private FlowPane fpRight;
     @FXML
     private GridPane gridPane;
-    public static StackPane[][] stackPanes = new StackPane[30][30];
+    private StackPane[][] stackPanes = new StackPane[30][30];
     private LinkedList<? super Vehicle> vehicles = new LinkedList<>();
     private boolean simulationStarted = false;
 
@@ -36,34 +36,22 @@ public class Controller {
         generateCrossroads();
         generateTrainStations();
 
-        Car testCar = new Car("Yugo", "Koral", 1995, 400, Images.imgCar1, 4, this);
+        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
         Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
-        Car testCar3 = new Car("Yugo", "Koral", 1995, 300, Images.imgCar3, 4, this);
-        Car testCar4 = new Car("Yugo", "Koral", 1995, 250, Images.imgCar4, 4, this);
-        Car testCar5 = new Car("Fiat", "Fico", 1995, 400, Images.imgCar1, 4, this);
+        Car testCar3 = new Car("Yugo", "Koral", 1995, 350, Images.imgCar3, 4, this);
+//        Car testCar4 = new Car("Yugo", "Koral", 1995, 250, Images.imgCar4, 4, this);
+//        Car testCar5 = new Car("Yugo", "Koral", 1995, 400, Images.imgCar1, 4, this);
         vehicles.add(testCar);
         vehicles.add(testCar2);
         vehicles.add(testCar3);
-        vehicles.add(testCar4);
-        vehicles.add(testCar5);
+//        vehicles.add(testCar4);
+//        vehicles.add(testCar5);
         fpTop.getChildren().add(testCar);
         fpTop.getChildren().add(testCar2);
-        fpBottom.getChildren().add(testCar3);
-        fpLeft.getChildren().add(testCar4);
-        fpRight.getChildren().add(testCar5);
+        fpTop.getChildren().add(testCar3);
+//        fpTop.getChildren().add(testCar4);
+//        fpTop.getChildren().add(testCar5);
 
-//        Image image = new Image("assets/cars/truck2.png");
-//
-//        ImageView imgView = new ImageView(image);
-//        imgView.setFitHeight(30);
-//        imgView.setPreserveRatio(true);
-//        imgView.setSmooth(true);
-//
-//        fpTop.getChildren().add(imgView);
-//        imgView.setRotate(90);
-//
-//        fpTop.getChildren().add(new ImageView(image2));
-//        fpBottom.getChildren().add(new ImageView(image2));
         //imgView.setVisible(false);
 
     }
@@ -284,12 +272,47 @@ public class Controller {
 
     public FlowPane getFpRight(){ return fpRight; }
 
+    public synchronized boolean hasVehicle(Position position){
+        if(position != null) {
+            int i = position.getI();
+            int j = position.getJ();
+            return !stackPanes[i][j].getChildren().isEmpty();
+        }
+        return false;
+    }
+
+    public synchronized void addVehicle(Position position, Vehicle vehicle){
+        if(position != null) {
+            int i = position.getI();
+            int j = position.getJ();
+            stackPanes[i][j].getChildren().add(vehicle);
+        }
+    }
+
+    public synchronized Vehicle getVehicle(Position position){
+        if(hasVehicle(position)){
+            int i = position.getI();
+            int j = position.getJ();
+            return (Vehicle)stackPanes[i][j].getChildren().get(0);
+        }
+        return null;
+    }
+
     @FXML
     public void startSimulation(){
         if(!simulationStarted){
-            for(Object o : vehicles)
-                ((Vehicle)o).go();
             simulationStarted = true;
+            Thread thread = new Thread(() -> {
+                for(Object o : vehicles){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    ((Vehicle)o).go();
+                }
+            });
+            thread.start();
         }
     }
 }

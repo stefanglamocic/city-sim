@@ -1,7 +1,6 @@
 package project.java.datamodel;
 
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -40,15 +39,17 @@ public abstract class Vehicle extends ImageView implements Runnable{
         setFitHeight(27);
         setPreserveRatio(true);
         setSmooth(true);
+        setCache(true);
         thread = new Thread(this);
+        thread.setDaemon(true);
     }
 
     @Override
     public void run(){
         Random random = new Random();
-        //LinkedList<Position> positionList = new LinkedList<>();
+        //LinkedList<Position> positionList = null;
         while(true){
-
+            //LinkedList<Position> positionList = null;
             FlowPane destination = new FlowPane();
             LinkedList<Position> positionList = new LinkedList<>();
             int finalRotation = 0;
@@ -95,38 +96,30 @@ public abstract class Vehicle extends ImageView implements Runnable{
             }
 
             try{
-                Thread.sleep(1000); //vrijeme cekanja u flow pane-u
+                Thread.sleep(300); //vrijeme cekanja u flow pane-u
             }catch (InterruptedException e){
                 //TO-DO: LOGGER
             }
 
+            LinkedList<Position> positions = positionList;
             int sleepTime = speed;
 
-            for(int i = 0; i < positionList.size(); i++){
-                int x = positionList.get(i).getI();
-                int y = positionList.get(i).getJ();
+            for (int i = 0; i < positionList.size(); i++) {
                 int counter = i;
-                LinkedList<Position> positions = positionList;
-                Platform.runLater(() -> {
-                    if(!checkForVehicle(positions, counter))
-                        Controller.stackPanes[x][y].getChildren().add(this);
-                });
+                Platform.runLater(() -> controller.addVehicle(positions.get(counter), this));
                 int j = i + 1;
-                if(j < positionList.size()){
-                    if(checkForVehicle(positionList, j)){
-                        int tempX = positionList.get(j).getI();
-                        int tempY = positionList.get(j).getJ();
-                        Vehicle vehicle = (Vehicle) Controller.stackPanes[tempX][tempY].getChildren().get(0);
-                        if(sleepTime < vehicle.getSpeed())
-                            sleepTime = vehicle.getSpeed();
-                    }
+                if (j < positionList.size()) {
+                    Vehicle nextVehicle = controller.getVehicle(positionList.get(j));
+                    if (nextVehicle != null && sleepTime < nextVehicle.getSpeed())
+                        sleepTime = nextVehicle.getSpeed();
+
                     Position pos1 = positionList.get(i);
                     Position pos2 = positionList.get(j);
                     movementRotation(comparePositions(pos1, pos2));
                 }
-                try{
+                try {
                     Thread.sleep(sleepTime);
-                }catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     //Logger
                 }
             }
@@ -141,10 +134,6 @@ public abstract class Vehicle extends ImageView implements Runnable{
     public void go(){ thread.start(); }
 
     public int getSpeed(){ return speed; }
-
-    private boolean checkForVehicle(LinkedList<Position> positions, int j){
-        return !Controller.stackPanes[positions.get(j).getI()][positions.get(j).getJ()].getChildren().isEmpty();
-    }
 
     private void rotate(int degrees){
         setRotate(0);
