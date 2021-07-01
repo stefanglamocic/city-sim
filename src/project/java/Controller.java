@@ -326,7 +326,7 @@ public class Controller {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    ((Vehicle)o).go();
+                    ((RoadVehicle)o).go();
                 }
             });
             thread.start();

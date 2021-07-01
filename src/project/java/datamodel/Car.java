@@ -3,7 +3,7 @@ package project.java.datamodel;
 import javafx.scene.image.Image;
 import project.java.Controller;
 
-public class Car extends Vehicle{
+public class Car extends RoadVehicle {
     private int doors;
 
     public Car(String brand, String model, int modelYear, int speed, Image image, int doors, Controller controller) {
