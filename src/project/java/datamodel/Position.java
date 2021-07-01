@@ -5,11 +5,16 @@ import java.util.Objects;
 public class Position{
     private int i;
     private int j;
-    //dodati boolean za crossroad???
+    private boolean isCrossroad;
 
     public Position(int i, int j) {
         this.i = i;
         this.j = j;
+    }
+
+    public Position(int i, int j, boolean isCrossroad){
+        this(i, j);
+        this.isCrossroad = isCrossroad;
     }
 
     public int getI() {
@@ -28,9 +33,17 @@ public class Position{
         this.j = j;
     }
 
+    public boolean isCrossroad(){
+        return isCrossroad;
+    }
+
+    public void setCrossroad(){
+        isCrossroad = true;
+    }
+
     @Override
     public String toString() {
-        return "[" + i + "]" + "[" + j + "]";
+        return "[" + i + "]" + "[" + j + "]" + " " + isCrossroad;
     }
 
     @Override

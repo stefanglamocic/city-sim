@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import project.java.datamodel.*;
 
 import java.util.LinkedList;
+import java.util.Set;
 
 public class Controller {
     @FXML
@@ -35,6 +36,7 @@ public class Controller {
         generateRailroads();
         generateCrossroads();
         generateTrainStations();
+
 
         Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
         Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
@@ -109,11 +111,26 @@ public class Controller {
     private void generateCrossroads(){
         String color = StylesCSS.BLACK;
         setStackPaneColor(13, 6, color);
+        getPositionFromSet(Roads.upToDown, 13, 6).setCrossroad();
         setStackPaneColor(14, 6, color);
+        getPositionFromSet(Roads.downToUp, 14, 6).setCrossroad();
         setStackPaneColor(26, 20, color);
+        getPositionFromSet(Roads.rightToDown, 26, 20).setCrossroad();
         setStackPaneColor(26, 21, color);
+        getPositionFromSet(Roads.downToRight, 26, 21).setCrossroad();
         setStackPaneColor(2, 20, color);
+        getPositionFromSet(Roads.downToLeft, 2, 20).setCrossroad();
         setStackPaneColor(2, 21, color);
+        getPositionFromSet(Roads.leftToDown, 2, 21).setCrossroad();
+    }
+
+    private Position getPositionFromSet(Set<Position> set, int i, int j){
+        Position temp = null;
+        for(Position position : set){
+            if(position.equals(new Position(i, j)))
+                temp = position;
+        }
+        return temp;
     }
 
     private void generateRailroads(){

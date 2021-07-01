@@ -64,9 +64,20 @@ public class Roads {
             }
 
             visited[temp.getI()][temp.getJ()] = true;
-            queue.add(new Position(temp.getI(), temp.getJ()));
+            if(!isCrossroad(road, temp))
+                queue.add(new Position(temp.getI(), temp.getJ()));
+            else
+                queue.add(new Position(temp.getI(), temp.getJ(), true));
         }
 
         return queue;
+    }
+
+    private static boolean isCrossroad(Set<Position> road, Position position){
+        for(Position p : road){
+            if(p.equals(position) && p.isCrossroad())
+                return true;
+        }
+        return false;
     }
 }
