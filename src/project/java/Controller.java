@@ -24,7 +24,7 @@ public class Controller {
     @FXML
     private GridPane gridPane;
     private StackPane[][] stackPanes = new StackPane[30][30];
-    private LinkedList<? super Vehicle> vehicles = new LinkedList<>();
+    private LinkedList<Vehicle> vehicles = new LinkedList<>();
     private boolean simulationStarted = false;
 
 

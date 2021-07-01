@@ -14,23 +14,23 @@
                     <MenuItem text="Start..." onAction="#startSimulation"/>
                 </Menu>
             </MenuBar>
-            <FlowPane fx:id="fpTop" style="-fx-background-color: green"
+            <FlowPane fx:id="fpTop" style="-fx-background-color: #5ca904"
                       prefHeight="40" vgap="3" hgap="3"/>
         </VBox>
     </top>
 
     <bottom>
-        <FlowPane fx:id="fpBottom" style="-fx-background-color: green"
+        <FlowPane fx:id="fpBottom" style="-fx-background-color: #5ca904"
         prefHeight="40" vgap="3" hgap="3"/>
     </bottom>
 
     <left>
-        <FlowPane fx:id="fpLeft" orientation="VERTICAL" style="-fx-background-color: green"
+        <FlowPane fx:id="fpLeft" orientation="VERTICAL" style="-fx-background-color: #5ca904"
         prefWidth="40" vgap="3" hgap="3"/>
     </left>
 
     <right>
-        <FlowPane fx:id="fpRight" orientation="VERTICAL" style="-fx-background-color: green"
+        <FlowPane fx:id="fpRight" orientation="VERTICAL" style="-fx-background-color: #5ca904"
         prefWidth="40" vgap="3" hgap="3"/>
     </right>
 

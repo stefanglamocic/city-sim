@@ -47,6 +47,7 @@ public abstract class Vehicle extends ImageView implements Runnable{
     @Override
     public void run(){
         Random random = new Random();
+        //LinkedList<Position> positionList = new LinkedList<>();
         //LinkedList<Position> positionList = null;
         while(true){
             //LinkedList<Position> positionList = null;
@@ -96,7 +97,7 @@ public abstract class Vehicle extends ImageView implements Runnable{
             }
 
             try{
-                Thread.sleep(300); //vrijeme cekanja u flow pane-u
+                Thread.sleep((long)(Math.random() * 800)); //vrijeme cekanja u flow pane-u
             }catch (InterruptedException e){
                 //TO-DO: LOGGER
             }
