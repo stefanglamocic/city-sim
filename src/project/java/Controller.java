@@ -34,9 +34,8 @@ public class Controller {
         populateGridPane();
         generateRoads();
         generateRailroads();
-        generateCrossroads();
         generateTrainStations();
-
+        generateCrossroads();
 
         Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
         Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
@@ -136,40 +135,50 @@ public class Controller {
     private void generateRailroads(){
         String color = StylesCSS.GRAY;
         for(int i = 0; i < 14; i++){
-            setStackPaneColor(2, 29 - i, color);
-            setStackPaneColor(6 + i, 6, color);
+            setRailroad(2, 29 - i, color);
+            setRailroad(6 + i, 6, color);
         }
         for(int i = 0; i < 11; i++)
-            setStackPaneColor(5, 6 + i, color);
+            setRailroad(5, 6 + i, color);
         for(int i = 0; i < 8; i++)
-            setStackPaneColor(19, 6 + i, color);
+            setRailroad(19, 6 + i, color);
         for(int i = 0; i < 7; i++)
-            setStackPaneColor(20, 12 + i, color);
+            setRailroad(20, 12 + i, color);
         for(int i = 0; i < 9; i++)
-            setStackPaneColor(26, 18 + i, color);
+            setRailroad(26, 18 + i, color);
         for(int i = 0; i < 5; i++)
-            setStackPaneColor(25 - i, 18, color);
+            setRailroad(25 - i, 18, color);
         for(int i = 0; i < 3; i++) {
-            setStackPaneColor(29 - i, 25, color);
-            setStackPaneColor(26, 9 + i, color);
+            setRailroad(29 - i, 25, color);
+            setRailroad(26, 9 + i, color);
         }
         for(int i = 0; i < 4; i++)
-            setStackPaneColor(28, 6 + i, color);
+            setRailroad(28, 6 + i, color);
         for(int i = 0; i < 2; i++) {
-            setStackPaneColor(3 + i, 16, color);
-            setStackPaneColor(22, 2 + i, color);
-            setStackPaneColor(23, 3 + i, color);
+            setRailroad(3 + i, 16, color);
+            setRailroad(22, 2 + i, color);
+            setRailroad(23, 3 + i, color);
         }
         for(int i = 0; i < 6; i++){
-            setStackPaneColor(27 - i, 1, color);
-            setStackPaneColor(28 - i, 5, color);
-            setStackPaneColor(26 - i, 12, color);
+            setRailroad(27 - i, 1, color);
+            setRailroad(28 - i, 5, color);
+            setRailroad(26 - i, 12, color);
         }
-        setStackPaneColor(27, 9, color);
+        setRailroad(27, 9, color);
     }
 
     private void setStackPaneColor(int i, int j, String color){
         stackPanes[i][j].setStyle(color);
+    }
+
+    private void setRailroad(int i, int j, String color){
+        setStackPaneColor(i, j, color);
+        Railroads.railroads.add(new Position(i, j));
+    }
+
+    private void setStationColor(int i, int j, String color){
+        setStackPaneColor(i, j, color);
+        Railroads.railroads.remove(new Position(i, j));
     }
 
     private void setStationImage(int quadrant, int i, int j){
@@ -212,72 +221,72 @@ public class Controller {
 
         //Train station A:
         Label a = new Label("A");
-        setStackPaneColor(1, 28, StylesCSS.GRAY_THIRD);
+        setStationColor(1, 28, StylesCSS.GRAY_THIRD);
         stackPanes[1][28].getChildren().add(a);
         setStationImage(3, 1, 28);
         StackPane.setAlignment(a, Pos.BOTTOM_LEFT);
         StackPane.setMargin(a, insets);
-        setStackPaneColor(2, 27, StylesCSS.GRAY_SECOND);
+        setStationColor(2, 27, StylesCSS.GRAY_SECOND);
         setStationImage(2, 2, 27);
-        setStackPaneColor(1, 27, StylesCSS.GRAY_FIRST);
+        setStationColor(1, 27, StylesCSS.GRAY_FIRST);
         setStationImage(1, 1, 27);
-        setStackPaneColor(2, 28, StylesCSS.GRAY_FOURTH);
+        setStationColor(2, 28, StylesCSS.GRAY_FOURTH);
         setStationImage(4, 2, 28);
 
         //Train station B:
         Label b = new Label("B");
-        setStackPaneColor(6, 6, StylesCSS.GRAY_THIRD);
+        setStationColor(6, 6, StylesCSS.GRAY_THIRD);
         stackPanes[6][6].getChildren().add(b);
         StackPane.setAlignment(b, Pos.BOTTOM_LEFT);
         StackPane.setMargin(b, insets);
         setStationImage(3, 6, 6);
-        setStackPaneColor(7, 5, StylesCSS.GRAY_SECOND);
+        setStationColor(7, 5, StylesCSS.GRAY_SECOND);
         setStationImage(2, 7, 5);
-        setStackPaneColor(6, 5, StylesCSS.GRAY_FIRST);
+        setStationColor(6, 5, StylesCSS.GRAY_FIRST);
         setStationImage(1, 6, 5);
-        setStackPaneColor(7, 6, StylesCSS.GRAY_FOURTH);
+        setStationColor(7, 6, StylesCSS.GRAY_FOURTH);
         setStationImage(4, 7, 6);
 
         //Train station C:
         Label c = new Label("C");
-        setStackPaneColor(19, 13, StylesCSS.GRAY_THIRD);
+        setStationColor(19, 13, StylesCSS.GRAY_THIRD);
         stackPanes[19][13].getChildren().add(c);
         StackPane.setAlignment(c, Pos.BOTTOM_LEFT);
         StackPane.setMargin(c, insets);
         setStationImage(3, 19, 13);
-        setStackPaneColor(20, 12, StylesCSS.GRAY_SECOND);
+        setStationColor(20, 12, StylesCSS.GRAY_SECOND);
         setStationImage(2, 20, 12);
-        setStackPaneColor(19, 12, StylesCSS.GRAY_FIRST);
+        setStationColor(19, 12, StylesCSS.GRAY_FIRST);
         setStationImage(1, 19, 12);
-        setStackPaneColor(20, 13, StylesCSS.GRAY_FOURTH);
+        setStationColor(20, 13, StylesCSS.GRAY_FOURTH);
         setStationImage(4, 20, 13);
 
         //Train station D:
         Label d = new Label("D");
-        setStackPaneColor(26, 2, StylesCSS.GRAY_THIRD);
+        setStationColor(26, 2, StylesCSS.GRAY_THIRD);
         stackPanes[26][2].getChildren().add(d);
         StackPane.setAlignment(d, Pos.BOTTOM_LEFT);
         StackPane.setMargin(d, insets);
         setStationImage(3, 26, 2);
-        setStackPaneColor(27, 1, StylesCSS.GRAY_SECOND);
+        setStationColor(27, 1, StylesCSS.GRAY_SECOND);
         setStationImage(2, 27, 1);
-        setStackPaneColor(26, 1, StylesCSS.GRAY_FIRST);
+        setStationColor(26, 1, StylesCSS.GRAY_FIRST);
         setStationImage(1, 26, 1);
-        setStackPaneColor(27, 2, StylesCSS.GRAY_FOURTH);
+        setStationColor(27, 2, StylesCSS.GRAY_FOURTH);
         setStationImage(4, 27, 2);
 
         //Train station E:
         Label e = new Label("E");
-        setStackPaneColor(25, 26, StylesCSS.GRAY_THIRD);
+        setStationColor(25, 26, StylesCSS.GRAY_THIRD);
         stackPanes[25][26].getChildren().add(e);
         StackPane.setAlignment(e, Pos.BOTTOM_LEFT);
         StackPane.setMargin(e, insets);
         setStationImage(3, 25, 26);
-        setStackPaneColor(26, 25, StylesCSS.GRAY_SECOND);
+        setStationColor(26, 25, StylesCSS.GRAY_SECOND);
         setStationImage(2, 26, 25);
-        setStackPaneColor(25, 25, StylesCSS.GRAY_FIRST);
+        setStationColor(25, 25, StylesCSS.GRAY_FIRST);
         setStationImage(1, 25, 25);
-        setStackPaneColor(26, 26, StylesCSS.GRAY_FOURTH);
+        setStationColor(26, 26, StylesCSS.GRAY_FOURTH);
         setStationImage(4, 26, 26);
     }
 

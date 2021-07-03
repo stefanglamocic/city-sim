@@ -13,6 +13,18 @@ public class Locomotive extends RailwayVehicle{
         this.locomotiveType = locomotiveType;
         this.driveType = driveType;
     }
+
+    public int getPower() {
+        return power;
+    }
+
+    public LocomotiveType getLocomotiveType() {
+        return locomotiveType;
+    }
+
+    public DriveType getDriveType() {
+        return driveType;
+    }
 }
 
 enum LocomotiveType{

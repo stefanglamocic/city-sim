@@ -46,10 +46,14 @@ public abstract class RoadVehicle extends Vehicle{
     @Override
     public void run(){
         Random random = new Random();
-        //LinkedList<Position> positionList = new LinkedList<>();
-        //LinkedList<Position> positionList = null;
         while(true){
-            //LinkedList<Position> positionList = null;
+
+            try{
+                Thread.sleep(300); //vrijeme cekanja u flow pane-u
+            }catch (InterruptedException e){
+                //TO-DO: LOGGER
+            }
+
             FlowPane destination = new FlowPane();
             LinkedList<Position> positionList = new LinkedList<>();
             int finalRotation = 0;
@@ -93,12 +97,6 @@ public abstract class RoadVehicle extends Vehicle{
                         finalRotation = 270;
                     }break;
                 }
-            }
-
-            try{
-                Thread.sleep(300); //vrijeme cekanja u flow pane-u
-            }catch (InterruptedException e){
-                //TO-DO: LOGGER
             }
 
             LinkedList<Position> positions = positionList;
