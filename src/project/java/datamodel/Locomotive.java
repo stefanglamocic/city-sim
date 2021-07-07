@@ -1,6 +1,8 @@
 package project.java.datamodel;
 
 import javafx.scene.image.Image;
+import project.java.datamodel.enums.DriveType;
+import project.java.datamodel.enums.LocomotiveType;
 
 public class Locomotive extends RailwayVehicle{
     private int power;
@@ -27,10 +29,3 @@ public class Locomotive extends RailwayVehicle{
     }
 }
 
-enum LocomotiveType{
-    Passenger, Cargo, Universal, Maintenance
-}
-
-enum DriveType{
-    Steam, Diesel, Electrical
-}

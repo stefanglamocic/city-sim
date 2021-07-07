@@ -1,5 +1,6 @@
 package project.java;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +10,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import project.java.datamodel.*;
+import project.java.datamodel.enums.DriveType;
+import project.java.datamodel.enums.LocomotiveType;
 
 import java.util.LinkedList;
 import java.util.Set;
@@ -37,23 +40,45 @@ public class Controller {
         generateTrainStations();
         generateCrossroads();
 
-        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
-        Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
-        Car testCar3 = new Car("Yugo", "Koral", 1995, 350, Images.imgCar3, 4, this);
-//        Car testCar4 = new Car("Yugo", "Koral", 1995, 250, Images.imgCar4, 4, this);
-//        Car testCar5 = new Car("Yugo", "Koral", 1995, 400, Images.imgCar1, 4, this);
-        vehicles.add(testCar);
-        vehicles.add(testCar2);
-        vehicles.add(testCar3);
-//        vehicles.add(testCar4);
-//        vehicles.add(testCar5);
-        fpTop.getChildren().add(testCar);
-        fpTop.getChildren().add(testCar2);
-        fpTop.getChildren().add(testCar3);
-//        fpTop.getChildren().add(testCar4);
-//        fpTop.getChildren().add(testCar5);
+        LinkedList<Position> temp = new LinkedList<>();
+        for(int i = 0; i < 9; i++){
+            temp.add(new Position(2, 26 - i));
+        }
+        RailwayComposition comp = new RailwayComposition(this, 0);
+        comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
+        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
+        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
 
-        //imgView.setVisible(false);
+        Thread thread = new Thread(() -> {
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for(int i = 0; i < 11; i++){
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int finalI = i;
+                Platform.runLater(() -> comp.addComposition(new Position(2, 26 - finalI), temp));
+            }
+        });
+
+        thread.start();
+
+//        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
+//        Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
+//        Car testCar3 = new Car("Yugo", "Koral", 1995, 350, Images.imgCar3, 4, this);
+//        vehicles.add(testCar);
+//        vehicles.add(testCar2);
+//        vehicles.add(testCar3);
+//        fpTop.getChildren().add(testCar);
+//        fpTop.getChildren().add(testCar2);
+//        fpTop.getChildren().add(testCar3);
 
     }
 

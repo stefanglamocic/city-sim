@@ -1,20 +1,19 @@
 package project.java.datamodel;
 
 import project.java.Controller;
-
+import project.java.datamodel.enums.LocomotiveType;
 import java.util.LinkedList;
+
 
 public class RailwayComposition {
     private LinkedList<RailwayVehicle> composition = new LinkedList<>();
     private int speed;
     private Controller controller;
-    private CompositionDirection direction;
     private LocomotiveType initialLocomotive;
 
-    public RailwayComposition(Controller controller, int speed, CompositionDirection direction){
+    public RailwayComposition(Controller controller, int speed){
         this.controller = controller;
         this.speed = speed;
-        this.direction = direction;
     }
 
     public void addRailwayVehicle(RailwayVehicle vehicle){
@@ -50,8 +49,20 @@ public class RailwayComposition {
         return false;
     }
 
+    public void addComposition(Position position, LinkedList<Position> railway) {
+        Position newPosition = position;
+
+        for(RailwayVehicle v : composition){
+            Position temp = new Position(v.getI(), v.getJ());
+            v.setI(newPosition.getI());
+            v.setJ(newPosition.getJ());
+
+            if(railway.contains(newPosition))
+                controller.addVehicle(newPosition, v);
+
+            newPosition = temp;
+        }
+    }
+
 }
 
-enum CompositionDirection{
-    Up, Down, Left, Right
-}
