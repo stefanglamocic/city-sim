@@ -57,8 +57,12 @@ public class RailwayComposition {
             v.setI(newPosition.getI());
             v.setJ(newPosition.getJ());
 
-            if(railway.contains(newPosition))
+            if(railway.contains(newPosition)) {
                 controller.addVehicle(newPosition, v);
+                v.setVisible(true);
+            }
+            else
+                v.setVisible(false);
 
             newPosition = temp;
         }
