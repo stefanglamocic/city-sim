@@ -1,11 +1,13 @@
 package project.java.datamodel;
 
 import javafx.scene.image.Image;
+import project.java.datamodel.enums.RailwayVehicleDirection;
 
 public abstract class RailwayVehicle extends Vehicle{
     private String mark;
     private int i;
     private int j;
+    private RailwayVehicleDirection direction;
 
     public RailwayVehicle(Image image, String mark){
         this.mark = mark;
@@ -33,6 +35,11 @@ public abstract class RailwayVehicle extends Vehicle{
         this.j = j;
     }
 
-    @Override
-    public void run(){}
+    public RailwayVehicleDirection getDirection() {
+        return direction;
+    }
+
+    public void setDirection(RailwayVehicleDirection direction) {
+        this.direction = direction;
+    }
 }

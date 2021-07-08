@@ -2,7 +2,10 @@ package project.java.datamodel;
 
 import project.java.Controller;
 import project.java.datamodel.enums.LocomotiveType;
+import project.java.datamodel.enums.RailwayVehicleDirection;
+
 import java.util.LinkedList;
+import java.util.Set;
 
 
 public class RailwayComposition {
@@ -49,22 +52,29 @@ public class RailwayComposition {
         return false;
     }
 
-    public void addComposition(Position position, LinkedList<Position> railway) {
+    public void addComposition(Position position, Set<Position> railroads) {
         Position newPosition = position;
+        RailwayVehicleDirection newDirection = composition.get(0).getDirection();
 
         for(RailwayVehicle v : composition){
             Position temp = new Position(v.getI(), v.getJ());
+            RailwayVehicleDirection tempDirection = v.getDirection();
+
             v.setI(newPosition.getI());
             v.setJ(newPosition.getJ());
+            v.setDirection(newDirection);
 
-            if(railway.contains(newPosition)) {
+            if(v.getI() != -1)
                 controller.addVehicle(newPosition, v);
+
+            if(railroads.contains(newPosition)) {
                 v.setVisible(true);
             }
             else
                 v.setVisible(false);
 
             newPosition = temp;
+            newDirection = tempDirection;
         }
     }
 

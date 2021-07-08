@@ -34,16 +34,9 @@ public class Controller {
 
     @FXML
     public void initialize(){
-        populateGridPane();
-        generateRoads();
-        generateRailroads();
-        generateTrainStations();
-        generateCrossroads();
+        generateWorld();
 
-        LinkedList<Position> temp = new LinkedList<>();
-        for(int i = 0; i < 9; i++){
-            temp.add(new Position(2, 26 - i));
-        }
+        LinkedList<Position> temp = Roads.BFS(Railroads.stationB, Railroads.stationC, Railroads.railroadSystem);
         RailwayComposition comp = new RailwayComposition(this, 0);
         comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
@@ -57,14 +50,13 @@ public class Controller {
                 e.printStackTrace();
             }
 
-            for(int i = 0; i < 13; i++){
+            for(Position p : temp){
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                int finalI = i;
-                Platform.runLater(() -> comp.addComposition(new Position(2, 26 - finalI), temp));
+                Platform.runLater(() -> comp.addComposition(p, Railroads.railroads));
             }
         });
 
@@ -204,6 +196,7 @@ public class Controller {
     private void setStationColor(int i, int j, String color){
         setStackPaneColor(i, j, color);
         Railroads.railroads.remove(new Position(i, j));
+        Railroads.stations.add(new Position(i, j));
     }
 
     private void setStationImage(int quadrant, int i, int j){
@@ -347,6 +340,16 @@ public class Controller {
             return (Vehicle)stackPanes[i][j].getChildren().get(0);
         }
         return null;
+    }
+
+    private void generateWorld(){
+        populateGridPane();
+        generateRoads();
+        generateRailroads();
+        generateTrainStations();
+        generateCrossroads();
+        Railroads.railroadSystem.addAll(Railroads.railroads);
+        Railroads.railroadSystem.addAll(Railroads.stations);
     }
 
     @FXML

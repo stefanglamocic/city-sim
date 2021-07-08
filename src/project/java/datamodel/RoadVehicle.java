@@ -8,7 +8,7 @@ import project.java.Controller;
 import java.util.LinkedList;
 import java.util.Random;
 
-public abstract class RoadVehicle extends Vehicle{
+public abstract class RoadVehicle extends Vehicle implements Runnable{
     protected String brand;
     protected String model;
     protected int modelYear;
