@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import project.java.Controller;
+import project.java.datamodel.enums.VehicleDirection;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -133,39 +134,34 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
 
     public int getSpeed(){ return speed; }
 
-    private void rotate(int degrees){
-        setRotate(0);
-        setRotate(degrees);
-    }
-
-    private int comparePositions(Position pos1, Position pos2){
+    public static VehicleDirection comparePositions(Position pos1, Position pos2){
         int x1 = pos1.getI();
         int x2 = pos2.getI();
         int y1 = pos1.getJ();
         int y2 = pos2.getJ();
 
         if(y2 < y1)
-            return 1; //up
+            return VehicleDirection.Up;
         else if(y2 > y1)
-            return 2; //down
+            return VehicleDirection.Down;
         else if(x2 < x1)
-            return 3; //left
+            return VehicleDirection.Left;
         else
-            return 4; //right
+            return VehicleDirection.Right;
     }
 
-    private void movementRotation(int comparison){
+    private void movementRotation(VehicleDirection comparison){
         switch (comparison){
-            case 1:
+            case Up:
                 rotate(0);
                 break;
-            case 2:
+            case Down:
                 rotate(180);
                 break;
-            case 3:
+            case Left:
                 rotate(270);
                 break;
-            case 4:
+            case Right:
                 rotate(90);
                 break;
         }

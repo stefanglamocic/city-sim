@@ -1,22 +1,26 @@
 package project.java.datamodel;
 
+import javafx.application.Platform;
 import project.java.Controller;
 import project.java.datamodel.enums.LocomotiveType;
-import project.java.datamodel.enums.RailwayVehicleDirection;
+import project.java.datamodel.enums.VehicleDirection;
 
 import java.util.LinkedList;
 import java.util.Set;
 
 
-public class RailwayComposition {
+public class RailwayComposition implements Runnable{
     private LinkedList<RailwayVehicle> composition = new LinkedList<>();
     private int speed;
     private Controller controller;
     private LocomotiveType initialLocomotive;
+    private Thread thread;
 
     public RailwayComposition(Controller controller, int speed){
         this.controller = controller;
         this.speed = speed;
+        thread = new Thread(this);
+        thread.setDaemon(true);
     }
 
     public void addRailwayVehicle(RailwayVehicle vehicle){
@@ -54,11 +58,11 @@ public class RailwayComposition {
 
     public void addComposition(Position position, Set<Position> railroads) {
         Position newPosition = position;
-        RailwayVehicleDirection newDirection = composition.get(0).getDirection();
+        VehicleDirection newDirection = composition.get(0).getDirection();
 
         for(RailwayVehicle v : composition){
             Position temp = new Position(v.getI(), v.getJ());
-            RailwayVehicleDirection tempDirection = v.getDirection();
+            VehicleDirection tempDirection = v.getDirection();
 
             v.setI(newPosition.getI());
             v.setJ(newPosition.getJ());
@@ -78,5 +82,54 @@ public class RailwayComposition {
         }
     }
 
+    private void compositionRotation(){
+        for(RailwayVehicle v : composition) {
+            switch (v.getDirection()) {
+                case Up:
+                    v.rotate(90);
+                    break;
+                case Down:
+                    v.rotate(270);
+                    break;
+                case Left:
+                    v.rotate(0);
+                    break;
+                case Right:
+                    v.rotate(180);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        LinkedList<Position> temp = Roads.BFS(Railroads.stationA, Railroads.stationD, Railroads.railroadSystem);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for(int i = 0; i < temp.size(); i++){
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            int j = i + 1;
+            if(j < temp.size()){
+                Position pos1 = temp.get(i);
+                Position pos2 = temp.get(j);
+                composition.get(0).setDirection(RoadVehicle.comparePositions(pos1, pos2));
+            }
+            compositionRotation();
+
+            int finalI = i;
+            Platform.runLater(() -> addComposition(temp.get(finalI), Railroads.railroads));
+        }
+    }
+
+    public void go(){ thread.start(); }
 }
 

@@ -1,5 +1,5 @@
 package project.java.datamodel.enums;
 
-public enum RailwayVehicleDirection {
+public enum VehicleDirection {
     Up, Down, Left, Right
 }

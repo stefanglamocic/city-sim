@@ -36,31 +36,12 @@ public class Controller {
     public void initialize(){
         generateWorld();
 
-        LinkedList<Position> temp = Roads.BFS(Railroads.stationB, Railroads.stationC, Railroads.railroadSystem);
         RailwayComposition comp = new RailwayComposition(this, 0);
         comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
 
-        Thread thread = new Thread(() -> {
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            for(Position p : temp){
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Platform.runLater(() -> comp.addComposition(p, Railroads.railroads));
-            }
-        });
-
-        thread.start();
+        comp.go();
 
 //        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
 //        Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
