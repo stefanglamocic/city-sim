@@ -1,1 +1,3 @@
 .idea/libraries/
+out/production/JavaProject2021/project/java/*.class
+out/production/JavaProject2021/project/java/datamodel/*.class
