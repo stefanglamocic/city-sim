@@ -36,6 +36,10 @@ public abstract class RailwayVehicle extends Vehicle{
         this.j = j;
     }
 
+    public Position getPosition(){
+        return new Position(i, j);
+    }
+
     public VehicleDirection getDirection() {
         return direction;
     }

@@ -71,15 +71,32 @@ public class RailwayComposition implements Runnable{
             if(v.getI() != -1)
                 controller.addVehicle(newPosition, v);
 
-            if(railroads.contains(newPosition)) {
-                v.setVisible(true);
-            }
-            else
-                v.setVisible(false);
+            v.setVisible(railroads.contains(newPosition));
 
             newPosition = temp;
             newDirection = tempDirection;
         }
+    }
+
+    private void compositionStop(Set<Position> railroads){
+       RailwayVehicle locomotive = composition.getFirst();
+       Position finalPosition = new Position(locomotive.getI(), locomotive.getJ());
+        VehicleDirection newDirection = composition.get(0).getDirection();
+       Position newPosition = finalPosition;
+       for(RailwayVehicle v : composition){
+           Position temp = new Position(v.getI(), v.getJ());
+           VehicleDirection tempDirection = v.getDirection();
+           if(!v.getPosition().equals(finalPosition)){
+               v.setI(newPosition.getI());
+               v.setJ(newPosition.getJ());
+               v.setDirection(newDirection);
+               controller.addVehicle(newPosition, v);
+               v.setVisible(railroads.contains(newPosition));
+
+               newPosition = temp;
+               newDirection = tempDirection;
+           }
+       }
     }
 
     private void compositionRotation(){
@@ -103,16 +120,17 @@ public class RailwayComposition implements Runnable{
 
     @Override
     public void run() {
-        LinkedList<Position> temp = Roads.BFS(Railroads.stationA, Railroads.stationD, Railroads.railroadSystem);
+        LinkedList<Position> temp = Roads.BFS(Railroads.stationA, Railroads.stationB, Railroads.railroadSystem);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        int sleepTime = 300;
 
         for(int i = 0; i < temp.size(); i++){
             try {
-                Thread.sleep(300);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -127,6 +145,19 @@ public class RailwayComposition implements Runnable{
 
             int finalI = i;
             Platform.runLater(() -> addComposition(temp.get(finalI), Railroads.railroads));
+        }
+
+        RailwayVehicle locomotive = composition.getFirst();
+        RailwayVehicle lastVehicle = composition.getLast();
+        Position finalPosition = new Position(locomotive.getI(), locomotive.getJ());
+        while(!lastVehicle.getPosition().equals(finalPosition)){
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                //logger
+            }
+            Platform.runLater(() -> compositionStop(Railroads.railroads));
+            compositionRotation();
         }
     }
 
