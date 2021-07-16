@@ -40,34 +40,36 @@ public class Roads {
         visited[start.getI()][start.getJ()] = true;
         Position temp = new Position(start.getI(), start.getJ());
 
-        while(!visited[end.getI()][end.getJ()]){
+        while(!visited[end.getI()][end.getJ()]) {
             Position up = new Position(temp.getI(), temp.getJ() - 1);
             Position down = new Position(temp.getI(), temp.getJ() + 1);
             Position left = new Position(temp.getI() - 1, temp.getJ());
             Position right = new Position(temp.getI() + 1, temp.getJ());
 
-            if(road.contains(up) && !visited[up.getI()][up.getJ()]){
+            if (road.contains(up) && !visited[up.getI()][up.getJ()]) {
                 temp.setI(up.getI());
                 temp.setJ(up.getJ());
-            }
-            else if(road.contains(down) && !visited[down.getI()][down.getJ()]){
+            } else if (road.contains(down) && !visited[down.getI()][down.getJ()]) {
                 temp.setI(down.getI());
                 temp.setJ(down.getJ());
-            }
-            else if(road.contains(left) && !visited[left.getI()][left.getJ()]){
+            } else if (road.contains(left) && !visited[left.getI()][left.getJ()]) {
                 temp.setI(left.getI());
                 temp.setJ(left.getJ());
-            }
-            else if(road.contains(right) && !visited[right.getI()][right.getJ()]){
+            } else if (road.contains(right) && !visited[right.getI()][right.getJ()]) {
                 temp.setI(right.getI());
                 temp.setJ(right.getJ());
+            }else{
+                temp = queue.pollLast();
+                continue;
             }
 
             visited[temp.getI()][temp.getJ()] = true;
-            if(!isCrossroad(road, temp))
-                queue.add(new Position(temp.getI(), temp.getJ()));
-            else
-                queue.add(new Position(temp.getI(), temp.getJ(), true));
+            if(!queue.contains(temp)) {
+                if (!isCrossroad(road, temp))
+                    queue.add(new Position(temp.getI(), temp.getJ()));
+                else
+                    queue.add(new Position(temp.getI(), temp.getJ(), true));
+            }
         }
 
         return queue;

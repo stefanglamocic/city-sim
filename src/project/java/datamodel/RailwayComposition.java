@@ -120,7 +120,7 @@ public class RailwayComposition implements Runnable{
 
     @Override
     public void run() {
-        LinkedList<Position> temp = Roads.BFS(Railroads.stationA, Railroads.stationB, Railroads.railroadSystem);
+        LinkedList<Position> temp = Roads.BFS(Railroads.stationA, Railroads.stationE, Railroads.railroadSystem);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
