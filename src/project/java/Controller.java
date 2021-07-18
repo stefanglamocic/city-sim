@@ -43,6 +43,10 @@ public class Controller {
 
         comp.go();
 
+//        LinkedList<Position> test = Railroads.BFS(Railroads.stationB, Railroads.stationA, Railroads.railroadSystem);
+//        for(Position p : test)
+//            System.out.println(p);
+
 //        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
 //        Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
 //        Car testCar3 = new Car("Yugo", "Koral", 1995, 350, Images.imgCar3, 4, this);
