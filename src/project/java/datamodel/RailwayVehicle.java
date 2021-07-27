@@ -13,7 +13,7 @@ public abstract class RailwayVehicle extends Vehicle{
         this.mark = mark;
         i = j = -1;
         setImage(image);
-        setFitWidth(29);
+        setFitWidth(30);
         setPreserveRatio(true);
         setSmooth(true);
         setCache(true);

@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import project.java.Controller;
 import project.java.datamodel.enums.VehicleDirection;
+import static project.java.datamodel.ConfigProperties.*;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -29,11 +30,10 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
         positionsDownToRight = Roads.BFS(Roads.downToRightStart, Roads.downToRightEnd, Roads.downToRight);
     }
 
-    public RoadVehicle(String brand, String model, int modelYear, int speed, Image image, Controller controller) {
+    public RoadVehicle(String brand, String model, int modelYear, Image image, Controller controller) {
         this.brand = brand;
         this.model = model;
         this.modelYear = modelYear;
-        this.speed = speed;
         this.controller = controller;
         setImage(image);
         setFitHeight(27);
@@ -54,7 +54,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
             }catch (InterruptedException e){
                 //TO-DO: LOGGER
             }
-
+            int minSleepTime = 0;
             FlowPane destination = new FlowPane();
             LinkedList<Position> positionList = new LinkedList<>();
             int finalRotation = 0;
@@ -62,16 +62,19 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
             if(controller.getFpTop().getChildren().contains(this)){
                 positionList = positionsUpToDown;
                 destination = controller.getFpBottom();
+                minSleepTime = middleRoadSpeed;
                 rotate(180);
             }
             else if(controller.getFpLeft().getChildren().contains(this)){
                 positionList = positionsLeftToDown;
                 destination = controller.getFpBottom();
+                minSleepTime = leftRoadSpeed;
                 rotate(90);
             }
             else if(controller.getFpRight().getChildren().contains(this)){
                 positionList = positionsRightToDown;
                 destination = controller.getFpBottom();
+                minSleepTime = rightRoadSpeed;
                 rotate(270);
             }
             else if(controller.getFpBottom().getChildren().contains(this)){
@@ -81,6 +84,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                     {
                         positionList = positionsDownToLeft;
                         destination = controller.getFpLeft();
+                        minSleepTime = leftRoadSpeed;
                         finalRotation = 90;
                     }break;
 
@@ -88,6 +92,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                     {
                         positionList = positionsDownToUp;
                         destination = controller.getFpTop();
+                        minSleepTime = middleRoadSpeed;
                         finalRotation = 180;
                     }break;
 
@@ -95,32 +100,47 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                     {
                         positionList = positionsDownToRight;
                         destination = controller.getFpRight();
+                        minSleepTime = rightRoadSpeed;
                         finalRotation = 270;
                     }break;
                 }
             }
 
             LinkedList<Position> positions = positionList;
+            speed = random.nextInt(minSpeed - minSleepTime) + minSleepTime;
             int sleepTime = speed;
 
             for (int i = 0; i < positionList.size(); i++) {
                 int counter = i;
-                Platform.runLater(() -> controller.addVehicle(positions.get(counter), this));
+                synchronized (this){
+                    while(controller.hasVehicle(positions.get(i))){
+                        try{
+                            wait(10);
+                        }catch (InterruptedException e){
+                            //logger
+                        }
+                    }
+                    Platform.runLater(() -> controller.addVehicle(positions.get(counter), this));
+                    notifyAll();
+                }
+//                Platform.runLater(() -> controller.addVehicle(positions.get(counter), this));
                 int j = i + 1;
                 if (j < positionList.size()) {
-                    RoadVehicle nextVehicle = (RoadVehicle) controller.getVehicle(positionList.get(j));
-                    if (nextVehicle != null && sleepTime < nextVehicle.getSpeed())
-                        sleepTime = nextVehicle.getSpeed();
+//                    RoadVehicle nextVehicle = (RoadVehicle) controller.getVehicle(positionList.get(j));
+//                    if (nextVehicle != null && sleepTime < nextVehicle.getSpeed())
+//                        sleepTime = nextVehicle.getSpeed();
 
                     Position pos1 = positionList.get(i);
                     Position pos2 = positionList.get(j);
                     movementRotation(comparePositions(pos1, pos2));
                 }
+
                 try {
                     Thread.sleep(sleepTime);
                 } catch (InterruptedException e) {
                     //Logger
                 }
+
             }
 
             rotate(finalRotation);

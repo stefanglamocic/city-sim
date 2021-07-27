@@ -6,8 +6,8 @@ import project.java.Controller;
 public class Car extends RoadVehicle {
     private int doors;
 
-    public Car(String brand, String model, int modelYear, int speed, Image image, int doors, Controller controller) {
-        super(brand, model, modelYear, speed, image, controller);
+    public Car(String brand, String model, int modelYear, Image image, int doors, Controller controller) {
+        super(brand, model, modelYear, image, controller);
         this.doors = doors;
     }
 }

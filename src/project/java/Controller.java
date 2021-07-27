@@ -12,8 +12,16 @@ import javafx.scene.layout.StackPane;
 import project.java.datamodel.*;
 import project.java.datamodel.enums.DriveType;
 import project.java.datamodel.enums.LocomotiveType;
+import static project.java.datamodel.ConfigProperties.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 
 public class Controller {
@@ -27,13 +35,23 @@ public class Controller {
     private FlowPane fpRight;
     @FXML
     private GridPane gridPane;
-    private StackPane[][] stackPanes = new StackPane[30][30];
+    private volatile StackPane[][] stackPanes = new StackPane[30][30];
     private LinkedList<Vehicle> vehicles = new LinkedList<>();
     private boolean simulationStarted = false;
-
+    public Properties properties;
+    private Path rootPath = Paths.get("config");
+    public Path configPath = Paths.get("config/config.properties");
 
     @FXML
     public void initialize(){
+        properties = new Properties();
+        try(InputStream inputStream = new FileInputStream(configPath.toString())){
+            properties.load(inputStream);
+        }catch (IOException e){
+            //logger
+        }
+        loadProperties();
+        new FileWatcher(this, rootPath);
         generateWorld();
 
         RailwayComposition comp = new RailwayComposition(this, 0);
@@ -41,21 +59,21 @@ public class Controller {
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
 
-        comp.go();
+        //comp.go();
 
 //        LinkedList<Position> test = Railroads.BFS(Railroads.stationB, Railroads.stationA, Railroads.railroadSystem);
 //        for(Position p : test)
 //            System.out.println(p);
 
-//        Car testCar = new Car("Yugo", "Koral", 1995, 300, Images.imgCar1, 4, this);
-//        Car testCar2 = new Car("Yugo", "Koral", 1995, 200, Images.imgCar2, 4, this);
-//        Car testCar3 = new Car("Yugo", "Koral", 1995, 350, Images.imgCar3, 4, this);
-//        vehicles.add(testCar);
-//        vehicles.add(testCar2);
-//        vehicles.add(testCar3);
-//        fpTop.getChildren().add(testCar);
-//        fpTop.getChildren().add(testCar2);
-//        fpTop.getChildren().add(testCar3);
+        Car testCar = new Car("Yugo", "Koral", 1995, Images.imgCar1, 4, this);
+        Car testCar2 = new Car("Yugo", "Koral", 1995, Images.imgCar2, 4, this);
+        Car testCar3 = new Car("Yugo", "Koral", 1995, Images.imgCar3, 4, this);
+        vehicles.add(testCar);
+        vehicles.add(testCar2);
+        vehicles.add(testCar3);
+        fpTop.getChildren().add(testCar);
+        fpTop.getChildren().add(testCar2);
+        fpTop.getChildren().add(testCar3);
 
     }
 
@@ -335,6 +353,15 @@ public class Controller {
         generateCrossroads();
         Railroads.railroadSystem.addAll(Railroads.railroads);
         Railroads.railroadSystem.addAll(Railroads.stations);
+    }
+
+    public synchronized void loadProperties(){
+        leftRoadSpeed = Integer.parseInt(properties.getProperty("leftRoadSpeed"));
+        leftRoadCars = Integer.parseInt(properties.getProperty("leftRoadCars"));
+        middleRoadSpeed = Integer.parseInt(properties.getProperty("middleRoadSpeed"));
+        middleRoadCars = Integer.parseInt(properties.getProperty("middleRoadCars"));
+        rightRoadSpeed = Integer.parseInt(properties.getProperty("rightRoadSpeed"));
+        rightRoadCars = Integer.parseInt(properties.getProperty("rightRoadCars"));
     }
 
     @FXML

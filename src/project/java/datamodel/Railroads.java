@@ -11,8 +11,8 @@ public class Railroads {
     public static Position stationC = new Position(19, 13);
     public static Position stationD = new Position(26, 2);
     public static Position stationE = new Position(25, 26);
-    private static Position aToE = new Position(2, 29);
-    private static Position eToA = new Position(29, 25);
+    private static final Position aToE = new Position(2, 29);
+    private static final Position eToA = new Position(29, 25);
 
     public static LinkedList<Position> BFS(Position start, Position end, Set<Position> road){
         LinkedList<LinkedList<Position>> queue = new LinkedList<>();
