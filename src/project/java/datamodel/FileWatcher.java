@@ -9,7 +9,7 @@ import java.nio.file.*;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 public class FileWatcher implements Runnable{
-    private final Controller controller;
+    private Controller controller;
     private final Path rootPath;
 
     public FileWatcher(Controller controller, Path rootPath){
@@ -35,6 +35,8 @@ public class FileWatcher implements Runnable{
                             //logger
                         }
                         controller.loadProperties();
+                        controller.placeVehicles();
+                        System.out.println("ispis");
                     }
                 }
             }

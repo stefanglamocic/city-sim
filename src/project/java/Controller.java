@@ -39,12 +39,14 @@ public class Controller {
     private LinkedList<Vehicle> vehicles = new LinkedList<>();
     private boolean simulationStarted = false;
     public Properties properties;
-    private Path rootPath = Paths.get("config");
+    private final Path rootPath = Paths.get("config");
     public Path configPath = Paths.get("config/config.properties");
+    public int carsGeneratedMiddle, carsGeneratedLeft, carsGeneratedRight;
 
     @FXML
     public void initialize(){
         properties = new Properties();
+        carsGeneratedMiddle = carsGeneratedLeft = carsGeneratedRight = 0;
         try(InputStream inputStream = new FileInputStream(configPath.toString())){
             properties.load(inputStream);
         }catch (IOException e){
@@ -53,6 +55,7 @@ public class Controller {
         loadProperties();
         new FileWatcher(this, rootPath);
         generateWorld();
+        placeVehicles();
 
         RailwayComposition comp = new RailwayComposition(this, 0);
         comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
@@ -64,17 +67,6 @@ public class Controller {
 //        LinkedList<Position> test = Railroads.BFS(Railroads.stationB, Railroads.stationA, Railroads.railroadSystem);
 //        for(Position p : test)
 //            System.out.println(p);
-
-        Car testCar = new Car("Yugo", "Koral", 1995, Images.imgCar1, 4, this);
-        Car testCar2 = new Car("Yugo", "Koral", 1995, Images.imgCar2, 4, this);
-        Car testCar3 = new Car("Yugo", "Koral", 1995, Images.imgCar3, 4, this);
-        vehicles.add(testCar);
-        vehicles.add(testCar2);
-        vehicles.add(testCar3);
-        fpTop.getChildren().add(testCar);
-        fpTop.getChildren().add(testCar2);
-        fpTop.getChildren().add(testCar3);
-
     }
 
     private void populateGridPane(){
@@ -356,12 +348,67 @@ public class Controller {
     }
 
     public synchronized void loadProperties(){
+        int lrc = Integer.parseInt(properties.getProperty("leftRoadCars"));
+        int mrc = Integer.parseInt(properties.getProperty("middleRoadCars"));
+        int rrc = Integer.parseInt(properties.getProperty("rightRoadCars"));
         leftRoadSpeed = Integer.parseInt(properties.getProperty("leftRoadSpeed"));
-        leftRoadCars = Integer.parseInt(properties.getProperty("leftRoadCars"));
+        if(lrc > leftRoadCars)
+            leftRoadCars = lrc;
         middleRoadSpeed = Integer.parseInt(properties.getProperty("middleRoadSpeed"));
-        middleRoadCars = Integer.parseInt(properties.getProperty("middleRoadCars"));
+        if(mrc > middleRoadCars)
+            middleRoadCars = mrc;
         rightRoadSpeed = Integer.parseInt(properties.getProperty("rightRoadSpeed"));
-        rightRoadCars = Integer.parseInt(properties.getProperty("rightRoadCars"));
+        if(rrc > rightRoadCars)
+            rightRoadCars = rrc;
+    }
+
+    public synchronized RoadVehicle generateVehicle(FlowPane flowPane){
+        Random rng = new Random();
+        RoadVehicle vehicle = null;
+        switch (rng.nextInt(6) + 1){
+            case 1:{
+                vehicle = new Car("Java", "modelA1", 2021, Images.imgCar1, 4, this);
+            }break;
+            case 2:{
+                vehicle = new Car("Java", "modelA2", 2021, Images.imgCar2, 4, this);
+            }break;
+            case 3:{
+                vehicle = new Car("Java", "modelA3", 2021, Images.imgCar3, 4, this);
+            }break;
+            case 4:{
+                vehicle = new Car("Java", "modelA4", 2021, Images.imgCar4, 4, this);
+            }break;
+            case 5:{
+                vehicle = new Truck("Java", "modelT5", 2021, Images.imgTruck1, 100, this);
+            }break;
+            case 6:{
+                vehicle = new Truck("Java", "modelT6", 2021, Images.imgTruck2, 80, this);
+            }break;
+        }
+        flowPane.getChildren().add(vehicle);
+        return vehicle;
+    }
+
+    public synchronized void placeVehicles(){
+        Random rng = new Random();
+        for(; carsGeneratedMiddle < middleRoadCars; carsGeneratedMiddle++){
+            if(rng.nextInt(2) == 0)
+                vehicles.add(generateVehicle(fpTop));
+            else
+                vehicles.add(generateVehicle(fpBottom));
+        }
+        for(; carsGeneratedLeft < leftRoadCars; carsGeneratedLeft++){
+            if(rng.nextInt(2) == 0)
+                vehicles.add(generateVehicle(fpLeft));
+            else
+                vehicles.add(generateVehicle(fpBottom));
+        }
+        for(; carsGeneratedRight < rightRoadCars; carsGeneratedRight++){
+            if(rng.nextInt(2) == 0)
+                vehicles.add(generateVehicle(fpRight));
+            else
+                vehicles.add(generateVehicle(fpBottom));
+        }
     }
 
     @FXML
@@ -370,12 +417,12 @@ public class Controller {
             simulationStarted = true;
             Thread thread = new Thread(() -> {
                 for(Object o : vehicles){
+                    ((RoadVehicle)o).go();
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    ((RoadVehicle)o).go();
                 }
             });
             thread.start();
