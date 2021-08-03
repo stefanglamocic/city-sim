@@ -113,7 +113,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
             for (int i = 0; i < positionList.size(); i++) {
                 int counter = i;
                 synchronized (this){
-                    while(controller.hasVehicle(positions.get(i))){
+                    while(controller.hasVehicle(positions.get(i)) || Roads.crossroadStop(positions.get(i))){
                         try{
                             wait(10);
                         }catch (InterruptedException e){
@@ -126,10 +126,6 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
 //                Platform.runLater(() -> controller.addVehicle(positions.get(counter), this));
                 int j = i + 1;
                 if (j < positionList.size()) {
-//                    RoadVehicle nextVehicle = (RoadVehicle) controller.getVehicle(positionList.get(j));
-//                    if (nextVehicle != null && sleepTime < nextVehicle.getSpeed())
-//                        sleepTime = nextVehicle.getSpeed();
-
                     Position pos1 = positionList.get(i);
                     Position pos2 = positionList.get(j);
                     movementRotation(comparePositions(pos1, pos2));

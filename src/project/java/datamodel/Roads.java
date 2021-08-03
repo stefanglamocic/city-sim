@@ -3,6 +3,7 @@ package project.java.datamodel;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import static project.java.datamodel.RailwayStations.*;
 
 public class Roads {
     public static Set<Position> upToDown = new HashSet<>();
@@ -80,6 +81,18 @@ public class Roads {
             if(p.equals(position) && p.isCrossroad())
                 return true;
         }
+        return false;
+    }
+
+    public synchronized static boolean crossroadStop(Position position){
+        if(!position.isCrossroad())
+            return false;
+        if(positionsAtoB.contains(position))
+            return closeLeftRoad;
+        else if(positionsBtoC.contains(position))
+            return closeMiddleRoad;
+        else if(positionsCtoE.contains(position))
+            return closeRightRoad;
         return false;
     }
 }

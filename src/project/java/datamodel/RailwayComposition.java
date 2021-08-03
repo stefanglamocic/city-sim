@@ -5,6 +5,7 @@ import project.java.Controller;
 import project.java.datamodel.enums.LocomotiveType;
 import project.java.datamodel.enums.VehicleDirection;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -120,13 +121,14 @@ public class RailwayComposition implements Runnable{
 
     @Override
     public void run() {
-        LinkedList<Position> temp = Railroads.BFS(Railroads.stationC, Railroads.stationA, Railroads.railroadSystem);
+        Set<Position> system = new HashSet<>(Railroads.railroadSystem);
+        LinkedList<Position> temp = Railroads.BFS(Railroads.stationC, Railroads.stationB, system);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int sleepTime = 300;
+        int sleepTime = 700; //privremena brzina
 
         for(int i = 0; i < temp.size(); i++){
             try {
@@ -145,6 +147,7 @@ public class RailwayComposition implements Runnable{
 
             int finalI = i;
             Platform.runLater(() -> addComposition(temp.get(finalI), Railroads.railroads));
+            RailwayStations.closeRamp(temp.get(i));
         }
 
         RailwayVehicle locomotive = composition.getFirst();

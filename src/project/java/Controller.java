@@ -62,11 +62,7 @@ public class Controller {
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
 
-        //comp.go();
-
-//        LinkedList<Position> test = Railroads.BFS(Railroads.stationB, Railroads.stationA, Railroads.railroadSystem);
-//        for(Position p : test)
-//            System.out.println(p);
+        comp.go();
     }
 
     private void populateGridPane(){
