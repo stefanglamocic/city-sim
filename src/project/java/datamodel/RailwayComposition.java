@@ -123,6 +123,7 @@ public class RailwayComposition implements Runnable{
     public void run() {
         Set<Position> system = new HashSet<>(Railroads.railroadSystem);
         LinkedList<Position> temp = Railroads.BFS(Railroads.stationC, Railroads.stationB, system);
+        //ovaj dio sa spavanjem 2s izbrisati
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -132,6 +133,10 @@ public class RailwayComposition implements Runnable{
 
         for(int i = 0; i < temp.size(); i++){
             try {
+                synchronized (this) {
+                    while (!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
+                        wait(10);
+                }
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -10,8 +10,9 @@
     <top>
         <VBox>
             <MenuBar>
-                <Menu text="Simulation">
-                    <MenuItem text="Start..." onAction="#startSimulation"/>
+                <Menu text="Simulation...">
+                    <MenuItem text="Start" onAction="#startSimulation"/>
+                    <MenuItem text="Details"/>
                 </Menu>
             </MenuBar>
             <FlowPane fx:id="fpTop" style="-fx-background-color: #82803B"

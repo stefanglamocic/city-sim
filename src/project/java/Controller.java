@@ -62,7 +62,7 @@ public class Controller {
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
         comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
 
-        comp.go();
+        //comp.go();
     }
 
     private void populateGridPane(){

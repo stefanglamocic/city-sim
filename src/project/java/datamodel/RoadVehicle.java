@@ -6,6 +6,7 @@ import javafx.scene.layout.FlowPane;
 import project.java.Controller;
 import project.java.datamodel.enums.VehicleDirection;
 import static project.java.datamodel.ConfigProperties.*;
+import static project.java.datamodel.Roads.*;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -20,14 +21,15 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
 
     private final static LinkedList<Position> positionsUpToDown, positionsLeftToDown, positionsRightToDown, positionsDownToLeft,
         positionsDownToUp, positionsDownToRight;
+    private static int carsOnLeftRoad, carsOnMiddleRoad, carsOnRightRoad;
 
     static {
-        positionsUpToDown = Roads.BFS(Roads.upToDownStart, Roads.upToDownEnd, Roads.upToDown);
-        positionsLeftToDown = Roads.BFS(Roads.leftToDownStart, Roads.leftToDownEnd, Roads.leftToDown);
-        positionsRightToDown = Roads.BFS(Roads.rightToDownStart, Roads.rightToDownEnd, Roads.rightToDown);
-        positionsDownToLeft = Roads.BFS(Roads.downToLeftStart, Roads.downToLeftEnd, Roads.downToLeft);
-        positionsDownToUp = Roads.BFS(Roads.downToUpStart, Roads.downToUpEnd, Roads.downToUp);
-        positionsDownToRight = Roads.BFS(Roads.downToRightStart, Roads.downToRightEnd, Roads.downToRight);
+        positionsUpToDown = BFS(upToDownStart, upToDownEnd, upToDown);
+        positionsLeftToDown = BFS(leftToDownStart, leftToDownEnd, leftToDown);
+        positionsRightToDown = BFS(rightToDownStart, rightToDownEnd, rightToDown);
+        positionsDownToLeft = BFS(downToLeftStart, downToLeftEnd, downToLeft);
+        positionsDownToUp = BFS(downToUpStart, downToUpEnd, downToUp);
+        positionsDownToRight = BFS(downToRightStart, downToRightEnd, downToRight);
     }
 
     public RoadVehicle(String brand, String model, int modelYear, Image image, Controller controller) {
@@ -50,7 +52,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
         while(true){
 
             try{
-                Thread.sleep(300); //vrijeme cekanja u flow pane-u
+                Thread.sleep(500); //vrijeme cekanja u flow pane-u
             }catch (InterruptedException e){
                 //TO-DO: LOGGER
             }
@@ -79,8 +81,9 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
             }
             else if(controller.getFpBottom().getChildren().contains(this)){
                 rotate(0);
-                switch(random.nextInt(3) + 1){
-                    case 1:
+                int randomNumber = random.nextInt(3);
+                switch(randomizeRoad(randomNumber)){
+                    case 0:
                     {
                         positionList = positionsDownToLeft;
                         destination = controller.getFpLeft();
@@ -88,7 +91,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                         finalRotation = 90;
                     }break;
 
-                    case 2:
+                    case 1:
                     {
                         positionList = positionsDownToUp;
                         destination = controller.getFpTop();
@@ -96,7 +99,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                         finalRotation = 180;
                     }break;
 
-                    case 3:
+                    case 2:
                     {
                         positionList = positionsDownToRight;
                         destination = controller.getFpRight();
@@ -106,6 +109,16 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                 }
             }
 
+            synchronized (this){
+                while(isLimitReached(positionList)) {
+                    try {
+                        wait(10);
+                    } catch (InterruptedException e) {
+                        //logger
+                    }
+                }
+            }
+            regulateCarsOnRoad(positionList, true);
             LinkedList<Position> positions = positionList;
             speed = random.nextInt(minSpeed - minSleepTime) + minSleepTime;
             int sleepTime = speed;
@@ -142,7 +155,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
             rotate(finalRotation);
             FlowPane finalDestination = destination;
             Platform.runLater(() -> finalDestination.getChildren().add(this));
-
+            regulateCarsOnRoad(positionList, false);
         }
     }
 
@@ -183,4 +196,30 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
         }
     }
 
+    private synchronized void regulateCarsOnRoad(LinkedList<Position> positionList, boolean add){
+        if(positionList.equals(positionsUpToDown) || positionList.equals(positionsDownToUp))
+            carsOnMiddleRoad = (add) ? (carsOnMiddleRoad + 1) : (carsOnMiddleRoad - 1);
+        else if(positionList.equals(positionsLeftToDown) || positionList.equals(positionsDownToLeft))
+            carsOnLeftRoad = (add) ? (carsOnLeftRoad + 1) : (carsOnLeftRoad - 1);
+        else if(positionList.equals(positionsRightToDown) || positionList.equals(positionsDownToRight))
+            carsOnRightRoad = (add) ? (carsOnRightRoad + 1) : (carsOnRightRoad - 1);
+    }
+
+    private synchronized boolean isLimitReached(LinkedList<Position> positionList){
+        if((positionList.equals(positionsUpToDown) || positionList.equals(positionsDownToUp))
+                && carsOnMiddleRoad == middleRoadCars)
+            return true;
+        else if((positionList.equals(positionsLeftToDown) || positionList.equals(positionsDownToLeft))
+                && carsOnLeftRoad == leftRoadCars)
+            return true;
+        else return (positionList.equals(positionsRightToDown) || positionList.equals(positionsDownToRight))
+                    && carsOnRightRoad == rightRoadCars;
+    }
+
+    private synchronized int randomizeRoad(int randomNumber){
+        if((randomNumber == 0 && carsOnLeftRoad == leftRoadCars)
+                || (randomNumber == 1 && carsOnMiddleRoad == middleRoadCars) || (randomNumber == 2 && carsOnRightRoad == rightRoadCars))
+            return randomizeRoad((randomNumber + 1) % 3);
+        return randomNumber;
+    }
 }
