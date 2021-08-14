@@ -16,6 +16,7 @@ public class RailwayComposition implements Runnable{
     private Controller controller;
     private LocomotiveType initialLocomotive;
     private Thread thread;
+    private Position start, end;
 
     public RailwayComposition(Controller controller, int speed){
         this.controller = controller;
@@ -122,19 +123,20 @@ public class RailwayComposition implements Runnable{
     @Override
     public void run() {
         Set<Position> system = new HashSet<>(Railroads.railroadSystem);
-        LinkedList<Position> temp = Railroads.BFS(Railroads.stationC, Railroads.stationB, system);
-        //ovaj dio sa spavanjem 2s izbrisati
-        try {
+        LinkedList<Position> temp = Railroads.BFS(start, end, system);
+        int sleepTime = speed;
+
+        try{
             Thread.sleep(2000);
-        } catch (InterruptedException e) {
+        }catch (InterruptedException e){
             e.printStackTrace();
         }
-        int sleepTime = 700; //privremena brzina
-
+        //!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i))
+        //controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i))
         for(int i = 0; i < temp.size(); i++){
             try {
                 synchronized (this) {
-                    while (!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
+                    while (controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i)))
                         wait(10);
                 }
                 Thread.sleep(sleepTime);
@@ -170,5 +172,9 @@ public class RailwayComposition implements Runnable{
     }
 
     public void go(){ thread.start(); }
+
+    public void setStart(Position start){ this.start = start; }
+
+    public void setEnd(Position end){ this.end = end; }
 }
 

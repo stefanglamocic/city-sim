@@ -1,28 +1,28 @@
 package project.java;
 
-import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import project.java.datamodel.*;
 import project.java.datamodel.enums.DriveType;
 import project.java.datamodel.enums.LocomotiveType;
+
 import static project.java.datamodel.ConfigProperties.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class Controller {
     @FXML
@@ -40,6 +40,7 @@ public class Controller {
     private boolean simulationStarted = false;
     public Properties properties;
     private final Path rootPath = Paths.get("config");
+    private final String compTestPath = "compositions/comp1.txt";
     public Path configPath = Paths.get("config/config.properties");
     public int carsGeneratedMiddle, carsGeneratedLeft, carsGeneratedRight;
 
@@ -57,12 +58,24 @@ public class Controller {
         generateWorld();
         placeVehicles();
 
-        RailwayComposition comp = new RailwayComposition(this, 0);
-        comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
-        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
-        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
+        initializeComposition();
 
-        //comp.go();
+//        RailwayComposition comp = new RailwayComposition(this, 500);
+//        comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
+//        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
+//        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
+//
+//        RailwayComposition comp2 = new RailwayComposition(this, 300);
+//        comp2.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
+//        comp2.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon3, "b", 3));
+//        comp2.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon4, "b", 3));
+//
+//        comp.setStart(Railroads.stationA);
+//        comp.setEnd(Railroads.stationB);
+//        comp2.setStart(Railroads.stationB);
+//        comp2.setEnd(Railroads.stationC);
+//        comp.go();
+//        comp2.go();
     }
 
     private void populateGridPane(){
@@ -316,21 +329,24 @@ public class Controller {
         return false;
     }
 
+    public synchronized boolean isOccupied(Position position){
+        if(position != null) {
+            int i = position.getI();
+            int j = position.getJ();
+            ObservableList<Node> list = stackPanes[i][j].getChildren();
+            for (Node n : list)
+                if(n instanceof RailwayVehicle)
+                    return true;
+        }
+        return false;
+    }
+
     public synchronized void addVehicle(Position position, Vehicle vehicle){
         if(position != null) {
             int i = position.getI();
             int j = position.getJ();
             stackPanes[i][j].getChildren().add(vehicle);
         }
-    }
-
-    public synchronized Vehicle getVehicle(Position position){
-        if(hasVehicle(position)){
-            int i = position.getI();
-            int j = position.getJ();
-            return (Vehicle)stackPanes[i][j].getChildren().get(0);
-        }
-        return null;
     }
 
     private void generateWorld(){
@@ -423,5 +439,110 @@ public class Controller {
             });
             thread.start();
         }
+    }
+
+    @FXML
+    public void openDetailsWindow(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("details.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 400, 1000);
+            Stage stage = new Stage();
+            stage.setTitle("Details");
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeComposition(){
+        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(compTestPath)))){
+            String line = scanner.nextLine();
+            String[] data = line.split(",");
+            if(data.length == 3){
+                int speed = Integer.parseInt(data[0]);
+                Position start = getStationPosition(data[1]);
+                Position end = getStationPosition(data[2]);
+                RailwayComposition composition = new RailwayComposition(this, speed);
+                composition.setStart(start);
+                composition.setEnd(end);
+
+                while(scanner.hasNextLine()){
+                    line = scanner.nextLine();
+                    data = line.split(",");
+                    if(data[0].equals("locomotive")){
+                        composition.addRailwayVehicle(initializeLocomotive(data));
+                    }
+                    else{
+                        composition.addRailwayVehicle(initializeWagon(data));
+                    }
+            }
+                composition.go();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private Position getStationPosition(String station){
+        Position temp = null;
+        switch (station){
+            case "A": temp = Railroads.stationA; break;
+            case "B": temp = Railroads.stationB; break;
+            case "C": temp = Railroads.stationC; break;
+            case "D": temp = Railroads.stationD; break;
+            case "E": temp = Railroads.stationE; break;
+        }
+        return temp;
+    }
+
+    private Locomotive initializeLocomotive(String[] data){
+        String mark = data[1];
+        int power = Integer.parseInt(data[2]);
+        LocomotiveType locomotiveType;
+        DriveType driveType;
+        switch (data[3]){
+            case "cargo": locomotiveType = LocomotiveType.Cargo;break;
+            case "universal": locomotiveType = LocomotiveType.Universal;break;
+            case "maintenance": locomotiveType = LocomotiveType.Maintenance;break;
+            case "passenger":
+            default: locomotiveType = LocomotiveType.Passenger;
+        }
+        switch(data[4]){
+            case "steam": driveType = DriveType.Steam;break;
+            case "diesel": driveType = DriveType.Diesel;break;
+            case "electrical":
+            default: driveType = DriveType.Electrical;
+        }
+
+        return new Locomotive(Images.imgTrain, mark, power, locomotiveType, driveType);
+    }
+
+    private Wagon initializeWagon(String[] data){
+        Wagon wagon;
+        String mark = data[1];
+        int length = Integer.parseInt(data[2]);
+        switch (data[0]){
+            case "sleeping": wagon = new PassengerWagonForSleeping(Images.imgWagon2, mark, length); break;
+            case "restaurant": wagon = new PassengerWagonRestaurant(Images.imgWagon3, mark, length, data[3]); break;
+            case "beds": {
+                int numberOfBeds = Integer.parseInt(data[3]);
+                wagon = new PassengerWagonWithBeds(Images.imgWagon1, mark, length, numberOfBeds);
+            } break;
+            case "seats": {
+                int numberOfSeats = Integer.parseInt(data[3]);
+                wagon = new PassengerWagonWithSeats(Images.imgWagon1, mark, length, numberOfSeats);
+            } break;
+            case "cargo": {
+                int loadCapacity = Integer.parseInt(data[3]);
+                wagon = new CargoWagon(Images.imgWagon5, mark, length, loadCapacity);
+            } break;
+            case "special":
+            default: wagon = new SpecialWagon(Images.imgWagon4, mark, length);
+        }
+
+        return wagon;
     }
 }

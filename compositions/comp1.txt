@@ -1,0 +1,4 @@
+500,A,B
+locomotive,a,5,passenger,electrical
+sleeping,b,3
+sleeping,b,3

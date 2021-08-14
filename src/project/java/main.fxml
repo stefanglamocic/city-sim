@@ -12,7 +12,7 @@
             <MenuBar>
                 <Menu text="Simulation...">
                     <MenuItem text="Start" onAction="#startSimulation"/>
-                    <MenuItem text="Details"/>
+                    <MenuItem text="Details" onAction="#openDetailsWindow"/>
                 </Menu>
             </MenuBar>
             <FlowPane fx:id="fpTop" style="-fx-background-color: #82803B"
