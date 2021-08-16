@@ -161,8 +161,6 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
 
     public void go(){ thread.start(); }
 
-    public int getSpeed(){ return speed; }
-
     public static VehicleDirection comparePositions(Position pos1, Position pos2){
         int x1 = pos1.getI();
         int x2 = pos2.getI();

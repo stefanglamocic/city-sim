@@ -7,5 +7,5 @@ public class ConfigProperties {
     public static int middleRoadCars;
     public static int rightRoadSpeed;
     public static int rightRoadCars;
-    public static int minSpeed = 800;
+    public static int minSpeed = 1000;
 }

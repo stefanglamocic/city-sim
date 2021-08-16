@@ -40,7 +40,7 @@ public class Controller {
     private boolean simulationStarted = false;
     public Properties properties;
     private final Path rootPath = Paths.get("config");
-    private final String compTestPath = "compositions/comp1.txt";
+    public final File compositionsFolder = new File("compositions/");
     public Path configPath = Paths.get("config/config.properties");
     public int carsGeneratedMiddle, carsGeneratedLeft, carsGeneratedRight;
 
@@ -55,11 +55,9 @@ public class Controller {
         }
         loadProperties();
         new FileWatcher(this, rootPath);
+        new FileWatcher(this, compositionsFolder.toPath());
         generateWorld();
         placeVehicles();
-
-        initializeComposition();
-
 //        RailwayComposition comp = new RailwayComposition(this, 500);
 //        comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
 //        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
@@ -427,6 +425,7 @@ public class Controller {
     public void startSimulation(){
         if(!simulationStarted){
             simulationStarted = true;
+            readCompositionFiles();
             Thread thread = new Thread(() -> {
                 for(Object o : vehicles){
                     ((RoadVehicle)o).go();
@@ -457,8 +456,8 @@ public class Controller {
         }
     }
 
-    private void initializeComposition(){
-        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(compTestPath)))){
+    public void initializeComposition(File file){
+        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(file)))){
             String line = scanner.nextLine();
             String[] data = line.split(",");
             if(data.length == 3){
@@ -479,11 +478,31 @@ public class Controller {
                         composition.addRailwayVehicle(initializeWagon(data));
                     }
             }
-                composition.go();
+                if(simulationStarted)
+                    composition.go();
             }
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public void readCompositionFiles(){
+        Thread thread = new Thread(() -> {
+            File[] files = compositionsFolder.listFiles();
+            if(files != null){
+                for(File f : files){
+                    if(f.isFile()){
+                        initializeComposition(f);
+                        try {
+                            Thread.sleep(2000);
+                        }catch (InterruptedException e){
+                            //logger
+                        }
+                    }
+                }
+            }
+        });
+        thread.start();
     }
 
     private Position getStationPosition(String station){
@@ -545,4 +564,6 @@ public class Controller {
 
         return wagon;
     }
+
+    public boolean isSimulationStarted(){ return simulationStarted; }
 }

@@ -20,7 +20,12 @@ public class RailwayComposition implements Runnable{
 
     public RailwayComposition(Controller controller, int speed){
         this.controller = controller;
-        this.speed = speed;
+        if(speed < 500)
+            this.speed = 500;
+        else if(speed > 1000)
+            this.speed = 1000;
+        else
+            this.speed = speed;
         thread = new Thread(this);
         thread.setDaemon(true);
     }
@@ -126,17 +131,12 @@ public class RailwayComposition implements Runnable{
         LinkedList<Position> temp = Railroads.BFS(start, end, system);
         int sleepTime = speed;
 
-        try{
-            Thread.sleep(2000);
-        }catch (InterruptedException e){
-            e.printStackTrace();
-        }
         //!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i))
         //controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i))
         for(int i = 0; i < temp.size(); i++){
             try {
                 synchronized (this) {
-                    while (controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i)))
+                    while (!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
                         wait(10);
                 }
                 Thread.sleep(sleepTime);

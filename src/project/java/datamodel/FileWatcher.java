@@ -28,6 +28,7 @@ public class FileWatcher implements Runnable{
             while(true){
                 for(WatchEvent<?> event : watchKey.pollEvents()){
                     Path file = rootPath.resolve((Path) event.context());
+                    //config watch
                     if(file.equals(controller.configPath)){
                         try(InputStream inputStream = new FileInputStream(file.toString())){
                             controller.properties.load(inputStream);
@@ -37,6 +38,10 @@ public class FileWatcher implements Runnable{
                         controller.loadProperties();
                         controller.placeVehicles();
                         System.out.println("ispis");
+                    }
+                    //compositions watch
+                    else if(file.getParent().equals(rootPath) && controller.isSimulationStarted()){
+                        controller.initializeComposition(file.toFile());
                     }
                 }
             }
