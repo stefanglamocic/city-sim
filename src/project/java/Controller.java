@@ -353,13 +353,20 @@ public class Controller {
         int lrc = Integer.parseInt(properties.getProperty("leftRoadCars"));
         int mrc = Integer.parseInt(properties.getProperty("middleRoadCars"));
         int rrc = Integer.parseInt(properties.getProperty("rightRoadCars"));
-        leftRoadSpeed = Integer.parseInt(properties.getProperty("leftRoadSpeed"));
+        int lrs = Integer.parseInt(properties.getProperty("leftRoadSpeed"));
+        int mrs = Integer.parseInt(properties.getProperty("middleRoadSpeed"));
+        int rrs = Integer.parseInt(properties.getProperty("rightRoadSpeed"));
+
+        if(lrs > 0 && lrs < minSpeed)
+            leftRoadSpeed = lrs;
         if(lrc > leftRoadCars)
             leftRoadCars = lrc;
-        middleRoadSpeed = Integer.parseInt(properties.getProperty("middleRoadSpeed"));
+        if(mrs > 0 && lrs < minSpeed)
+            middleRoadSpeed = mrs;
         if(mrc > middleRoadCars)
             middleRoadCars = mrc;
-        rightRoadSpeed = Integer.parseInt(properties.getProperty("rightRoadSpeed"));
+        if(rrs > 0 && rrs < minSpeed)
+            rightRoadSpeed = rrs;
         if(rrc > rightRoadCars)
             rightRoadCars = rrc;
     }
@@ -558,4 +565,6 @@ public class Controller {
     }
 
     public boolean isSimulationStarted(){ return simulationStarted; }
+
+    public LinkedList<Vehicle> getVehiclesList(){ return vehicles; }
 }

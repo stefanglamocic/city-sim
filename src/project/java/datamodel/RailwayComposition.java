@@ -6,8 +6,11 @@ import project.java.datamodel.enums.LocomotiveType;
 import project.java.datamodel.enums.VehicleDirection;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import static project.java.datamodel.RailwayStations.*;
+import static project.java.datamodel.Railroads.*;
 
 
 public class RailwayComposition implements Runnable{
@@ -130,10 +133,17 @@ public class RailwayComposition implements Runnable{
         Set<Position> system = new HashSet<>(Railroads.railroadSystem);
         LinkedList<Position> temp = Railroads.BFS(start, end, system);
         int sleepTime = speed;
+        int tripDuration = 0;
+        Position lastStation;
+        LinkedHashSet<Position> stationsTraveled = new LinkedHashSet<>();
 
         //!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i))
         //controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i))
         for(int i = 0; i < temp.size(); i++){
+            if(Railroads.stations.contains(temp.get(i)) && setLastStation(temp.get(i)) != null){
+                lastStation = setLastStation(temp.get(i));
+                stationsTraveled.add(lastStation);
+            }
             try {
                 synchronized (this) {
                     while (controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i)))
@@ -154,6 +164,7 @@ public class RailwayComposition implements Runnable{
 
             int finalI = i;
             Platform.runLater(() -> addComposition(temp.get(finalI), Railroads.railroads));
+            tripDuration += sleepTime;
             RailwayStations.closeRamp(temp.get(i));
         }
 
@@ -168,7 +179,10 @@ public class RailwayComposition implements Runnable{
             }
             Platform.runLater(() -> compositionStop(Railroads.railroads));
             compositionRotation();
+            tripDuration += sleepTime;
         }
+
+        MovementHistory history = new MovementHistory(sleepTime, tripDuration, temp); //dodati jos osobina u history
 
         for(RailwayVehicle v : composition)
             Platform.runLater(() -> controller.removeVehicle(end, v));
@@ -179,5 +193,46 @@ public class RailwayComposition implements Runnable{
     public void setStart(Position start){ this.start = start; }
 
     public void setEnd(Position end){ this.end = end; }
+
+    private synchronized boolean isRailroadOccupied(Position position, Position lastStation){
+        if(lastStation.equals(Railroads.stationA) && positionsAtoB.contains(position) && departureBtoA)
+            return true;
+        else if(lastStation.equals(Railroads.stationA) && positionsAtoE.contains(position) && departureEtoA)
+            return true;
+        else if(lastStation.equals(Railroads.stationB) && positionsAtoB.contains(position) && departureAtoB)
+            return true;
+        else if(lastStation.equals(Railroads.stationB) && positionsBtoC.contains(position) && departureCtoB)
+            return true;
+        else if(lastStation.equals(Railroads.stationC) && positionsBtoC.contains(position) && departureBtoC)
+            return true;
+        else if(lastStation.equals(Railroads.stationC) && positionsCtoD.contains(position) && departureDtoC)
+            return true;
+        else if(lastStation.equals(Railroads.stationC) && positionsCtoE.contains(position) && departureEtoC)
+            return true;
+        else if(lastStation.equals(Railroads.stationD) && positionsCtoD.contains(position) && departureCtoD)
+            return true;
+        else if(lastStation.equals(Railroads.stationE) && positionsCtoE.contains(position) && departureCtoE)
+            return true;
+        else return lastStation.equals(Railroads.stationE) && positionsAtoE.contains(position) && departureAtoE;
+    }
+
+    private synchronized Position setLastStation(Position position){
+        Position leftPosition, downPosition, ePosition;
+        leftPosition = new Position(position.getI() - 1, position.getJ());
+        downPosition = new Position(position.getI(), position.getJ() + 1);
+        ePosition = new Position(position.getI() - 1, position.getJ() + 1);
+        if(position.equals(stationA) || leftPosition.equals(stationA) || downPosition.equals(stationA) ||ePosition.equals(stationA))
+            return stationA;
+        else if(position.equals(stationB) || leftPosition.equals(stationB) || downPosition.equals(stationB) ||ePosition.equals(stationB))
+            return stationB;
+        else if(position.equals(stationC) || leftPosition.equals(stationC) || downPosition.equals(stationC) ||ePosition.equals(stationC))
+            return stationC;
+        else if(position.equals(stationD) || leftPosition.equals(stationD) || downPosition.equals(stationD) ||ePosition.equals(stationD))
+            return stationD;
+        else if(position.equals(stationE) || leftPosition.equals(stationE) || downPosition.equals(stationE) ||ePosition.equals(stationE))
+            return stationE;
+        else
+            return null;
+    }
 }
 

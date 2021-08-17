@@ -1,7 +1,6 @@
 package project.java.datamodel;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 import static project.java.datamodel.Railroads.*;
 
@@ -15,6 +14,17 @@ public class RailwayStations {
     public static boolean closeLeftRoad = false;
     public static boolean closeMiddleRoad = false;
     public static boolean closeRightRoad = false;
+
+    public static boolean departureAtoB = false;
+    public static boolean departureBtoA = false;
+    public static boolean departureAtoE = false;
+    public static boolean departureEtoA = false;
+    public static boolean departureBtoC = false;
+    public static boolean departureCtoB = false;
+    public static boolean departureCtoD = false;
+    public static boolean departureDtoC = false;
+    public static boolean departureCtoE = false;
+    public static boolean departureEtoC = false;
 
     private static Set<Position> setPositions(Position start, Position end){
         Set<Position> positions = new HashSet<>(BFS(start, end, railroadSystem));

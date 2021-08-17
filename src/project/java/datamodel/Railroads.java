@@ -61,4 +61,18 @@ public class Railroads {
 
         return currentQueue;
     }
+
+    public static String getStationName(Position station){
+        if(station.equals(stationA))
+            return "A";
+        else if(station.equals(stationB))
+            return "B";
+        else if(station.equals(stationC))
+            return "C";
+        else if(station.equals(stationD))
+            return "D";
+        else if(station.equals(stationE))
+            return "E";
+        else return null;
+    }
 }

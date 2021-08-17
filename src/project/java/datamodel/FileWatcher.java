@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
+import java.util.LinkedList;
+
 import static java.nio.file.StandardWatchEventKinds.*;
 
 public class FileWatcher implements Runnable{
@@ -37,10 +39,12 @@ public class FileWatcher implements Runnable{
                             //logger
                         }
                         controller.loadProperties();
+                        int lastCount = controller.carsGeneratedLeft + controller.carsGeneratedMiddle + controller.carsGeneratedRight;
                         Platform.runLater(() -> controller.placeVehicles());
+                        startVehicles(lastCount);
                     }
                     //compositions watch
-                    else if(file.getParent().equals(rootPath) && controller.isSimulationStarted()){
+                    else if(file.getParent().equals(rootPath) && controller.isSimulationStarted() && !file.toString().contains("~")){
                         controller.initializeComposition(file.toFile());
                     }
                 }
@@ -48,5 +52,20 @@ public class FileWatcher implements Runnable{
         }catch (Exception e){
             //logger
         }
+    }
+
+    private void startVehicles(int lastCount){
+        Thread thread = new Thread(() -> {
+            LinkedList<Vehicle> vehicles = controller.getVehiclesList();
+            for(int i = lastCount; i < vehicles.size(); i++){
+                ((RoadVehicle)vehicles.get(i)).go();
+                try{
+                    Thread.sleep(2000);
+                }catch (InterruptedException e){
+                    //logger
+                }
+            }
+        });
+        thread.start();
     }
 }

@@ -43,7 +43,7 @@ public class Position{
 
     @Override
     public String toString() {
-        return "[" + i + "]" + "[" + j + "]" + " " + isCrossroad;
+        return "[" + i + "]" + "[" + j + "]";
     }
 
     @Override
