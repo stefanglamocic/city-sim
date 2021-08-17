@@ -58,22 +58,6 @@ public class Controller {
         new FileWatcher(this, compositionsFolder.toPath());
         generateWorld();
         placeVehicles();
-//        RailwayComposition comp = new RailwayComposition(this, 500);
-//        comp.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
-//        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon1, "b", 3));
-//        comp.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon2, "b", 3));
-//
-//        RailwayComposition comp2 = new RailwayComposition(this, 300);
-//        comp2.addRailwayVehicle(new Locomotive(Images.imgTrain, "a", 5, LocomotiveType.Passenger, DriveType.Electrical));
-//        comp2.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon3, "b", 3));
-//        comp2.addRailwayVehicle(new PassengerWagonForSleeping(Images.imgWagon4, "b", 3));
-//
-//        comp.setStart(Railroads.stationA);
-//        comp.setEnd(Railroads.stationB);
-//        comp2.setStart(Railroads.stationB);
-//        comp2.setEnd(Railroads.stationC);
-//        comp.go();
-//        comp2.go();
     }
 
     private void populateGridPane(){
@@ -347,6 +331,14 @@ public class Controller {
         }
     }
 
+    public synchronized void removeVehicle(Position position, Vehicle vehicle){
+        if(position != null) {
+            int i = position.getI();
+            int j = position.getJ();
+            stackPanes[i][j].getChildren().remove(vehicle);
+        }
+    }
+
     private void generateWorld(){
         populateGridPane();
         generateRoads();
@@ -494,7 +486,7 @@ public class Controller {
                     if(f.isFile()){
                         initializeComposition(f);
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(1000);
                         }catch (InterruptedException e){
                             //logger
                         }

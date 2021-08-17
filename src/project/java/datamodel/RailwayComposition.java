@@ -136,7 +136,7 @@ public class RailwayComposition implements Runnable{
         for(int i = 0; i < temp.size(); i++){
             try {
                 synchronized (this) {
-                    while (!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
+                    while (controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i)))
                         wait(10);
                 }
                 Thread.sleep(sleepTime);
@@ -169,6 +169,9 @@ public class RailwayComposition implements Runnable{
             Platform.runLater(() -> compositionStop(Railroads.railroads));
             compositionRotation();
         }
+
+        for(RailwayVehicle v : composition)
+            Platform.runLater(() -> controller.removeVehicle(end, v));
     }
 
     public void go(){ thread.start(); }

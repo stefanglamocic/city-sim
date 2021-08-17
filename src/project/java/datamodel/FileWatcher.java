@@ -1,5 +1,6 @@
 package project.java.datamodel;
 
+import javafx.application.Platform;
 import project.java.Controller;
 
 import java.io.FileInputStream;
@@ -36,8 +37,7 @@ public class FileWatcher implements Runnable{
                             //logger
                         }
                         controller.loadProperties();
-                        controller.placeVehicles();
-                        System.out.println("ispis");
+                        Platform.runLater(() -> controller.placeVehicles());
                     }
                     //compositions watch
                     else if(file.getParent().equals(rootPath) && controller.isSimulationStarted()){
