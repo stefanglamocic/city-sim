@@ -327,7 +327,8 @@ public class Controller {
         if(position != null) {
             int i = position.getI();
             int j = position.getJ();
-            stackPanes[i][j].getChildren().add(vehicle);
+            if(!stackPanes[i][j].getChildren().contains(vehicle))
+                stackPanes[i][j].getChildren().add(vehicle);
         }
     }
 
