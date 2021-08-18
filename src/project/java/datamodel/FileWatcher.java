@@ -45,7 +45,15 @@ public class FileWatcher implements Runnable{
                     }
                     //compositions watch
                     else if(file.getParent().equals(rootPath) && controller.isSimulationStarted() && !file.toString().contains("~")){
-                        controller.initializeComposition(file.toFile());
+                        Thread thread = new Thread(() -> {
+                            controller.initializeComposition(file.toFile());
+                            try{
+                                Thread.sleep(2000);
+                            }catch (InterruptedException e){
+                                //logger
+                            }
+                        });
+                        thread.start();
                     }
                 }
             }

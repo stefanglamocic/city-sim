@@ -492,11 +492,6 @@ public class Controller {
                 for(File f : files){
                     if(f.isFile()){
                         initializeComposition(f);
-                        try {
-                            Thread.sleep(1000);
-                        }catch (InterruptedException e){
-                            //logger
-                        }
                     }
                 }
             }

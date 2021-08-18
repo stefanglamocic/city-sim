@@ -134,8 +134,10 @@ public class RailwayComposition implements Runnable{
         LinkedList<Position> temp = Railroads.BFS(start, end, system);
         int sleepTime = speed;
         int tripDuration = 0;
-        Position lastStation;
+        Position lastStation = null;
+        Position previousStation = null;
         LinkedHashSet<Position> stationsTraveled = new LinkedHashSet<>();
+        LinkedList<Position> stationsList;
 
         //!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i))
         //controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i))
@@ -143,13 +145,25 @@ public class RailwayComposition implements Runnable{
             if(Railroads.stations.contains(temp.get(i)) && setLastStation(temp.get(i)) != null){
                 lastStation = setLastStation(temp.get(i));
                 stationsTraveled.add(lastStation);
+                stationsList = new LinkedList<>(stationsTraveled);
+                if(stationsList.size() > 1)
+                    previousStation = stationsList.get(stationsList.size() - 2);
             }
+            if(previousStation != null)
+                clearRailroad(previousStation, lastStation);
+
             try {
                 synchronized (this) {
-                    while (controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i)))
-                        wait(10);
+                    while ((!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
+                            || isRailroadOccupied(temp.get(i), lastStation)){
+                        if(isRailroadOccupied(temp.get(i), lastStation)){
+                            Platform.runLater(() -> compositionStop(Railroads.railroads));
+                            wait(sleepTime);
+                        }
+                        wait(100);
+                        tripDuration += 100;
+                    }
                 }
-                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -164,8 +178,14 @@ public class RailwayComposition implements Runnable{
 
             int finalI = i;
             Platform.runLater(() -> addComposition(temp.get(finalI), Railroads.railroads));
+            setDeparture(temp.get(i), lastStation);
             tripDuration += sleepTime;
             RailwayStations.closeRamp(temp.get(i));
+            try{
+                Thread.sleep(sleepTime);
+            }catch (InterruptedException e){
+                //logger
+            }
         }
 
         RailwayVehicle locomotive = composition.getFirst();
@@ -181,6 +201,8 @@ public class RailwayComposition implements Runnable{
             compositionRotation();
             tripDuration += sleepTime;
         }
+        //nakon zaustavljanja kompozicije
+
 
         MovementHistory history = new MovementHistory(sleepTime, tripDuration, temp); //dodati jos osobina u history
 
@@ -233,6 +255,52 @@ public class RailwayComposition implements Runnable{
             return stationE;
         else
             return null;
+    }
+
+    private synchronized void setDeparture(Position position, Position lastStation){
+        if(positionsAtoB.contains(position) && lastStation.equals(stationA))
+            departureAtoB = true;
+        else if(positionsAtoB.contains(position) && lastStation.equals(stationB))
+            departureBtoA = true;
+        else if(positionsBtoC.contains(position) && lastStation.equals(stationB))
+            departureBtoC = true;
+        else if(positionsBtoC.contains(position) && lastStation.equals(stationC))
+            departureCtoB = true;
+        else if(positionsAtoE.contains(position) && lastStation.equals(stationA))
+            departureAtoE = true;
+        else if(positionsAtoE.contains(position) && lastStation.equals(stationE))
+            departureEtoA = true;
+        else if(positionsCtoE.contains(position) && lastStation.equals(stationC))
+            departureCtoE = true;
+        else if(positionsCtoE.contains(position) && lastStation.equals(stationE))
+            departureEtoC = true;
+        else if(positionsCtoD.contains(position) && lastStation.equals(stationC))
+            departureCtoD = true;
+        else if(positionsCtoD.contains(position) && lastStation.equals(stationD))
+            departureDtoC = true;
+    }
+
+    private synchronized void clearRailroad(Position previousStation, Position lastStation){
+        if(previousStation.equals(stationA) && lastStation.equals(stationB))
+            departureAtoB = false;
+        else if(previousStation.equals(stationA) && lastStation.equals(stationE))
+            departureAtoE = false;
+        else if(previousStation.equals(stationB) && lastStation.equals(stationA))
+            departureBtoA = false;
+        else if(previousStation.equals(stationB) && lastStation.equals(stationC))
+            departureBtoC = false;
+        else if(previousStation.equals(stationC) && lastStation.equals(stationB))
+            departureCtoB = false;
+        else if(previousStation.equals(stationC) && lastStation.equals(stationD))
+            departureCtoD = false;
+        else if(previousStation.equals(stationC) && lastStation.equals(stationE))
+            departureCtoE = false;
+        else if(previousStation.equals(stationD) && lastStation.equals(stationC))
+            departureDtoC = false;
+        else if(previousStation.equals(stationE) && lastStation.equals(stationC))
+            departureAtoE = false;
+        else if(previousStation.equals(stationE) && lastStation.equals(stationA))
+            departureEtoA = false;
     }
 }
 

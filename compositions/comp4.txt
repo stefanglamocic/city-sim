@@ -1,0 +1,4 @@
+600,C,A
+locomotive,a123,5,passenger,electrical
+sleeping,b12,3
+sleeping,b213,3
