@@ -47,4 +47,6 @@ public abstract class RailwayVehicle extends Vehicle{
     public void setDirection(VehicleDirection direction) {
         this.direction = direction;
     }
+
+    public String getMark(){ return mark; }
 }

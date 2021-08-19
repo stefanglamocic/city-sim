@@ -137,7 +137,7 @@ public class RailwayComposition implements Runnable{
         Position lastStation = null;
         Position previousStation = null;
         LinkedHashSet<Position> stationsTraveled = new LinkedHashSet<>();
-        LinkedList<Position> stationsList;
+        LinkedList<Position> stationsList = null;
         boolean derail;
         boolean noAlternatives = false;
 
@@ -179,8 +179,8 @@ public class RailwayComposition implements Runnable{
                                     break;
                                 }
                             }
-                            wait(100);
-                            tripDuration += 100;
+                            wait(10);
+                            tripDuration += 10;
                         }
                     }
                 } catch (InterruptedException e) {
@@ -226,7 +226,7 @@ public class RailwayComposition implements Runnable{
         }
         //nakon zaustavljanja kompozicije
 
-        MovementHistory history = new MovementHistory(sleepTime, tripDuration, temp); //dodati jos osobina u history
+        MovementHistory history = new MovementHistory(tripDuration, temp, stationsList, composition);
 
         for(RailwayVehicle v : composition)
             Platform.runLater(() -> controller.removeVehicle(end, v));
