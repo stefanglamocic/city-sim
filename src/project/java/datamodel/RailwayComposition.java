@@ -5,6 +5,10 @@ import project.java.Controller;
 import project.java.datamodel.enums.LocomotiveType;
 import project.java.datamodel.enums.VehicleDirection;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -20,6 +24,7 @@ public class RailwayComposition implements Runnable{
     private LocomotiveType initialLocomotive;
     private Thread thread;
     private Position start, end;
+    private static int fileID = 1;
 
     public RailwayComposition(Controller controller, int speed){
         this.controller = controller;
@@ -215,18 +220,23 @@ public class RailwayComposition implements Runnable{
             }
         }
         while(!lastVehicle.getPosition().equals(end)){
+            Platform.runLater(() -> compositionStop(Railroads.railroads));
+            compositionRotation();
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Platform.runLater(() -> compositionStop(Railroads.railroads));
-            compositionRotation();
             tripDuration += sleepTime;
         }
-        //nakon zaustavljanja kompozicije
 
-        MovementHistory history = new MovementHistory(tripDuration, temp, stationsList, composition);
+        String filePath = controller.historyFolder + File.separator + "movHistory" + (fileID++) + ".ser";
+        try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filePath))){
+            MovementHistory history = new MovementHistory(tripDuration, temp, stationsList, composition);
+            os.writeObject(history);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
         for(RailwayVehicle v : composition)
             Platform.runLater(() -> controller.removeVehicle(end, v));

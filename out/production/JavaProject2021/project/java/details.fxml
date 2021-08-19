@@ -3,10 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-          xmlns="http://javafx.com/javafx"
-          fx:controller="project.java.Details">
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx"
+            fx:controller="project.java.Details" hbarPolicy="NEVER">
+    <VBox fx:id="vBox" spacing="20"/>
 
-    <TextArea editable="false" VBox.vgrow="ALWAYS"/>
-
-</VBox>
+</ScrollPane>

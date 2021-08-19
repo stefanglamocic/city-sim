@@ -41,7 +41,8 @@ public class Controller {
     public Properties properties;
     private final Path rootPath = Paths.get("config");
     public final File compositionsFolder = new File("compositions/");
-    public Path configPath = Paths.get("config/config.properties");
+    public Path configPath = Paths.get("config" + File.separator + "config.properties");
+    public static final String historyFolder = "history";
     public int carsGeneratedMiddle, carsGeneratedLeft, carsGeneratedRight;
 
     @FXML

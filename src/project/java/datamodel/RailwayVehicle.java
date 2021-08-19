@@ -3,7 +3,9 @@ package project.java.datamodel;
 import javafx.scene.image.Image;
 import project.java.datamodel.enums.VehicleDirection;
 
-public abstract class RailwayVehicle extends Vehicle{
+import java.io.Serializable;
+
+public abstract class RailwayVehicle extends Vehicle implements Serializable {
     private String mark;
     private int i;
     private int j;
