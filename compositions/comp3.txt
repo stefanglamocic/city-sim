@@ -1,4 +1,4 @@
-500,A,C
+500,D,B
 locomotive,a,5,passenger,electrical
 sleeping,b,3
 sleeping,b,3

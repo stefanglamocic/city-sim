@@ -1,4 +1,4 @@
-600,C,A
+1000,B,C
 locomotive,a123,5,passenger,electrical
 sleeping,b12,3
 sleeping,b213,3

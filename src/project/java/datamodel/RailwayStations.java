@@ -48,7 +48,5 @@ public class RailwayStations {
             closeMiddleRoad = true;
         else if(positionsCtoE.contains(position))
             closeRightRoad = true;
-        else
-            closeLeftRoad = closeMiddleRoad = closeRightRoad = false;
     }
 }

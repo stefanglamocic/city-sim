@@ -138,71 +138,93 @@ public class RailwayComposition implements Runnable{
         Position previousStation = null;
         LinkedHashSet<Position> stationsTraveled = new LinkedHashSet<>();
         LinkedList<Position> stationsList;
-
-        //!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i))
-        //controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i))
-        for(int i = 0; i < temp.size(); i++){
-            if(Railroads.stations.contains(temp.get(i)) && setLastStation(temp.get(i)) != null){
-                lastStation = setLastStation(temp.get(i));
-                stationsTraveled.add(lastStation);
-                stationsList = new LinkedList<>(stationsTraveled);
-                if(stationsList.size() > 1)
-                    previousStation = stationsList.get(stationsList.size() - 2);
-            }
-            if(previousStation != null)
-                clearRailroad(previousStation, lastStation);
-
-            try {
-                synchronized (this) {
-                    while ((!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
-                            || isRailroadOccupied(temp.get(i), lastStation)){
-                        if(isRailroadOccupied(temp.get(i), lastStation)){
-                            Platform.runLater(() -> compositionStop(Railroads.railroads));
-                            wait(sleepTime);
-                        }
-                        wait(100);
-                        tripDuration += 100;
-                    }
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            int j = i + 1;
-            if(j < temp.size()){
-                Position pos1 = temp.get(i);
-                Position pos2 = temp.get(j);
-                composition.get(0).setDirection(RoadVehicle.comparePositions(pos1, pos2));
-            }
-            compositionRotation();
-
-            int finalI = i;
-            Platform.runLater(() -> addComposition(temp.get(finalI), Railroads.railroads));
-            setDeparture(temp.get(i), lastStation);
-            tripDuration += sleepTime;
-            RailwayStations.closeRamp(temp.get(i));
-            try{
-                Thread.sleep(sleepTime);
-            }catch (InterruptedException e){
-                //logger
-            }
-        }
+        boolean derail;
+        boolean noAlternatives = false;
 
         RailwayVehicle locomotive = composition.getFirst();
         RailwayVehicle lastVehicle = composition.getLast();
-        Position finalPosition = new Position(locomotive.getI(), locomotive.getJ());
-        while(!lastVehicle.getPosition().equals(finalPosition)){
+
+        //!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i))
+        //controller.isOccupied(temp.get(i)) && !end.equals(temp.get(i))
+        while(!locomotive.getPosition().equals(end)){
+            derail = false;
+            if(departureBtoC)
+                system = closeRailroad(positionsBtoC);
+            if(departureEtoC)
+                system = closeRailroad(positionsCtoE);
+            temp = Railroads.BFS(start, end, system);
+            if(!temp.contains(end))
+                noAlternatives = true;
+            for(int i = 0; i < temp.size(); i++){
+                if(Railroads.stations.contains(temp.get(i)) && setLastStation(temp.get(i)) != null){
+                    lastStation = setLastStation(temp.get(i));
+                    stationsTraveled.add(lastStation);
+                    stationsList = new LinkedList<>(stationsTraveled);
+                    if(stationsList.size() > 1)
+                        previousStation = stationsList.get(stationsList.size() - 2);
+                }
+                if(previousStation != null)
+                    clearRailroad(previousStation, lastStation);
+
+                try {
+                    synchronized (this) {
+                        while ((!Railroads.stations.contains(temp.get(i)) && controller.hasVehicle(temp.get(i)))
+                                || isRailroadOccupied(temp.get(i), lastStation)){
+                            if(isRailroadOccupied(temp.get(i), lastStation)){
+                                Platform.runLater(() -> compositionStop(Railroads.railroads));
+                                wait(sleepTime);
+                                if(lastStation.equals(stationC) && !temp.getLast().equals(stationD) && !noAlternatives){
+                                    derail = true;
+                                    start = lastStation;
+                                    break;
+                                }
+                            }
+                            wait(100);
+                            tripDuration += 100;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(derail)
+                    break;
+
+                int j = i + 1;
+                if(j < temp.size()){
+                    Position pos1 = temp.get(i);
+                    Position pos2 = temp.get(j);
+                    composition.get(0).setDirection(RoadVehicle.comparePositions(pos1, pos2));
+                }
+                compositionRotation();
+
+                if(stations.contains(temp.get(i)))
+                    openRamp(lastStation);
+
+                int finalI = i;
+                LinkedList<Position> finalTemp = temp;
+                Platform.runLater(() -> addComposition(finalTemp.get(finalI), Railroads.railroads));
+                setDeparture(temp.get(i), lastStation);
+                tripDuration += sleepTime;
+                RailwayStations.closeRamp(temp.get(i));
+                try{
+                    Thread.sleep(sleepTime);
+                }catch (InterruptedException e){
+                    //logger
+                }
+            }
+        }
+        while(!lastVehicle.getPosition().equals(end)){
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                //logger
+                e.printStackTrace();
             }
             Platform.runLater(() -> compositionStop(Railroads.railroads));
             compositionRotation();
             tripDuration += sleepTime;
         }
         //nakon zaustavljanja kompozicije
-
 
         MovementHistory history = new MovementHistory(sleepTime, tripDuration, temp); //dodati jos osobina u history
 
@@ -301,6 +323,21 @@ public class RailwayComposition implements Runnable{
             departureAtoE = false;
         else if(previousStation.equals(stationE) && lastStation.equals(stationA))
             departureEtoA = false;
+    }
+
+    private synchronized void openRamp(Position lastStation){
+        if(lastStation.equals(stationA))
+            closeLeftRoad = false;
+        else if(lastStation.equals(stationB)){
+            closeLeftRoad = false;
+            closeMiddleRoad = false;
+        }
+        else if(lastStation.equals(stationC)){
+            closeMiddleRoad = false;
+            closeRightRoad = false;
+        }
+        else if(lastStation.equals(stationE))
+            closeRightRoad = false;
     }
 }
 
