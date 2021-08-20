@@ -1,4 +1,4 @@
 1000,B,C
-locomotive,a123,5,passenger,electrical
-sleeping,b12,3
-sleeping,b213,3
+locomotive,a123,10,passenger,electrical
+sleeping,b12,13
+sleeping,b213,13

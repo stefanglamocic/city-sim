@@ -1,0 +1,5 @@
+600,B,E
+locomotive,locBD,5,passenger,steam
+beds,b,10,12
+cargo,c1,3,50
+cargo,c2,3,50

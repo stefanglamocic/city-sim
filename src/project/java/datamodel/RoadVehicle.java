@@ -4,12 +4,14 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import project.java.Controller;
+import project.java.Main;
 import project.java.datamodel.enums.VehicleDirection;
 import static project.java.datamodel.ConfigProperties.*;
 import static project.java.datamodel.Roads.*;
 
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.logging.Level;
 
 public abstract class RoadVehicle extends Vehicle implements Runnable{
     protected String brand;
@@ -54,7 +56,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
             try{
                 Thread.sleep(500); //vrijeme cekanja u flow pane-u
             }catch (InterruptedException e){
-                //TO-DO: LOGGER
+                Main.logger.log(Level.WARNING, "Thread interrupted.", e);
             }
             int minSleepTime = 0;
             FlowPane destination = new FlowPane();
@@ -114,7 +116,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                     try {
                         wait(10);
                     } catch (InterruptedException e) {
-                        //logger
+                        Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                     }
                 }
             }
@@ -130,7 +132,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                         try{
                             wait(10);
                         }catch (InterruptedException e){
-                            //logger
+                            Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                         }
                     }
                     Platform.runLater(() -> controller.addVehicle(positions.get(counter), this));
@@ -147,7 +149,7 @@ public abstract class RoadVehicle extends Vehicle implements Runnable{
                 try {
                     Thread.sleep(sleepTime);
                 } catch (InterruptedException e) {
-                    //Logger
+                    Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                 }
 
             }

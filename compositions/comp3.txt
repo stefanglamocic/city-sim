@@ -1,4 +1,5 @@
 500,D,B
-locomotive,a,5,passenger,electrical
-sleeping,b,3
-sleeping,b,3
+locomotive,a,10,passenger,diesel
+sleeping,b,13
+special,sp1,10
+sleeping,b,13

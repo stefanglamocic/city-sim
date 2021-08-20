@@ -2,6 +2,7 @@ package project.java.datamodel;
 
 import javafx.application.Platform;
 import project.java.Controller;
+import project.java.Main;
 import project.java.datamodel.enums.LocomotiveType;
 import project.java.datamodel.enums.VehicleDirection;
 
@@ -13,6 +14,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.logging.Level;
+
 import static project.java.datamodel.RailwayStations.*;
 import static project.java.datamodel.Railroads.*;
 
@@ -39,13 +42,15 @@ public class RailwayComposition implements Runnable{
     }
 
     public void addRailwayVehicle(RailwayVehicle vehicle){
-        if(composition.isEmpty() && vehicle instanceof Locomotive){
-            composition.add(vehicle);
-            initialLocomotive = ((Locomotive) vehicle).getLocomotiveType();
-        }
-        else if(vehicle instanceof Wagon ||
-                (vehicle instanceof Locomotive && isCompatible((Locomotive) vehicle))){
-            composition.add(vehicle);
+        if(vehicle != null){
+            if(composition.isEmpty() && vehicle instanceof Locomotive){
+                composition.add(vehicle);
+                initialLocomotive = ((Locomotive) vehicle).getLocomotiveType();
+            }
+            else if(vehicle instanceof Wagon ||
+                    (vehicle instanceof Locomotive && isCompatible((Locomotive) vehicle))){
+                composition.add(vehicle);
+            }
         }
     }
 
@@ -158,8 +163,10 @@ public class RailwayComposition implements Runnable{
             if(departureEtoC)
                 system = closeRailroad(positionsCtoE);
             temp = Railroads.BFS(start, end, system);
-            if(!temp.contains(end))
+            if(!temp.contains(end)){
                 noAlternatives = true;
+                system = new HashSet<>(Railroads.railroadSystem);
+            }
             for(int i = 0; i < temp.size(); i++){
                 if(Railroads.stations.contains(temp.get(i)) && setLastStation(temp.get(i)) != null){
                     lastStation = setLastStation(temp.get(i));
@@ -189,7 +196,7 @@ public class RailwayComposition implements Runnable{
                         }
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                 }
 
                 if(derail)
@@ -215,7 +222,7 @@ public class RailwayComposition implements Runnable{
                 try{
                     Thread.sleep(sleepTime);
                 }catch (InterruptedException e){
-                    //logger
+                    Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                 }
             }
         }
@@ -225,7 +232,7 @@ public class RailwayComposition implements Runnable{
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Main.logger.log(Level.WARNING, "Thread interrupted.", e);
             }
             tripDuration += sleepTime;
         }
@@ -235,7 +242,7 @@ public class RailwayComposition implements Runnable{
             MovementHistory history = new MovementHistory(tripDuration, temp, stationsList, composition);
             os.writeObject(history);
         }catch (IOException e){
-            e.printStackTrace();
+            Main.logger.log(Level.WARNING, "File error, can't serialize object.", e);
         }
 
         for(RailwayVehicle v : composition)
@@ -349,5 +356,7 @@ public class RailwayComposition implements Runnable{
         else if(lastStation.equals(stationE))
             closeRightRoad = false;
     }
+
+    public int getCompositionSize(){ return composition.size(); }
 }
 

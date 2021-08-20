@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.logging.Level;
 
 public class Details {
     @FXML
@@ -47,14 +48,14 @@ public class Details {
                     innerVbox.getChildren().addAll(textArea, titledPane);
                     vBox.getChildren().add(innerVbox);
                 }catch (Exception e){
-                    e.printStackTrace();
+                    Main.logger.log(Level.SEVERE, "Can't display details.", e);
                 }
             }
         }
     }
 
     private String getCompositionDetails(MovementHistory movementHistory){
-        StringBuilder sb = new StringBuilder("Kompozicija, koju cine vozila oznaka: ");
+        StringBuilder sb = new StringBuilder("Kompozicija koju cine vozila oznaka: ");
         for(RailwayVehicle vehicle : movementHistory.getComposition()){
             sb.append(vehicle.getMark()).append(", ");
         }

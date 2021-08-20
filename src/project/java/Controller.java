@@ -23,6 +23,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Level;
 
 public class Controller {
     @FXML
@@ -52,7 +53,7 @@ public class Controller {
         try(InputStream inputStream = new FileInputStream(configPath.toString())){
             properties.load(inputStream);
         }catch (IOException e){
-            //logger
+            Main.logger.log(Level.SEVERE, "Properties error", e);
         }
         loadProperties();
         new FileWatcher(this, rootPath);
@@ -433,7 +434,7 @@ public class Controller {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Main.logger.log(Level.WARNING, "Thread interrupted", e);
                     }
                 }
             });
@@ -453,7 +454,7 @@ public class Controller {
             stage.show();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            Main.logger.log(Level.SEVERE, "Failed to load fxml file.", e);
         }
     }
 
@@ -479,11 +480,11 @@ public class Controller {
                         composition.addRailwayVehicle(initializeWagon(data));
                     }
             }
-                if(simulationStarted)
+                if(simulationStarted && composition.getCompositionSize() > 0)
                     composition.go();
             }
         }catch (IOException e){
-            e.printStackTrace();
+            Main.logger.log(Level.SEVERE, "File reading error, can't initialize composition.", e);
         }
     }
 
@@ -494,6 +495,11 @@ public class Controller {
                 for(File f : files){
                     if(f.isFile()){
                         initializeComposition(f);
+                        try{
+                            Thread.sleep(1000);
+                        }catch (InterruptedException e){
+                            Main.logger.log(Level.WARNING, "Thread interrupted", e);
+                        }
                     }
                 }
             }
@@ -514,48 +520,62 @@ public class Controller {
     }
 
     private Locomotive initializeLocomotive(String[] data){
-        String mark = data[1];
-        int power = Integer.parseInt(data[2]);
-        LocomotiveType locomotiveType;
-        DriveType driveType;
-        switch (data[3]){
-            case "cargo": locomotiveType = LocomotiveType.Cargo;break;
-            case "universal": locomotiveType = LocomotiveType.Universal;break;
-            case "maintenance": locomotiveType = LocomotiveType.Maintenance;break;
-            case "passenger":
-            default: locomotiveType = LocomotiveType.Passenger;
-        }
-        switch(data[4]){
-            case "steam": driveType = DriveType.Steam;break;
-            case "diesel": driveType = DriveType.Diesel;break;
-            case "electrical":
-            default: driveType = DriveType.Electrical;
-        }
+        if(data.length == 5){
+            String mark = data[1];
+            int power = Integer.parseInt(data[2]);
+            LocomotiveType locomotiveType;
+            DriveType driveType;
+            switch (data[3]){
+                case "cargo": locomotiveType = LocomotiveType.Cargo;break;
+                case "universal": locomotiveType = LocomotiveType.Universal;break;
+                case "maintenance": locomotiveType = LocomotiveType.Maintenance;break;
+                case "passenger":
+                default: locomotiveType = LocomotiveType.Passenger;
+            }
+            switch(data[4]){
+                case "steam": driveType = DriveType.Steam;break;
+                case "diesel": driveType = DriveType.Diesel;break;
+                case "electrical":
+                default: driveType = DriveType.Electrical;
+            }
 
-        return new Locomotive(Images.imgTrain, mark, power, locomotiveType, driveType);
+            return new Locomotive(Images.imgTrain, mark, power, locomotiveType, driveType);
+        }
+        return null;
     }
 
     private Wagon initializeWagon(String[] data){
-        Wagon wagon;
-        String mark = data[1];
-        int length = Integer.parseInt(data[2]);
-        switch (data[0]){
-            case "sleeping": wagon = new PassengerWagonForSleeping(Images.imgWagon2, mark, length); break;
-            case "restaurant": wagon = new PassengerWagonRestaurant(Images.imgWagon3, mark, length, data[3]); break;
-            case "beds": {
-                int numberOfBeds = Integer.parseInt(data[3]);
-                wagon = new PassengerWagonWithBeds(Images.imgWagon1, mark, length, numberOfBeds);
-            } break;
-            case "seats": {
-                int numberOfSeats = Integer.parseInt(data[3]);
-                wagon = new PassengerWagonWithSeats(Images.imgWagon1, mark, length, numberOfSeats);
-            } break;
-            case "cargo": {
-                int loadCapacity = Integer.parseInt(data[3]);
-                wagon = new CargoWagon(Images.imgWagon5, mark, length, loadCapacity);
-            } break;
-            case "special":
-            default: wagon = new SpecialWagon(Images.imgWagon4, mark, length);
+        Wagon wagon = null;
+        if(data.length >= 3){
+            String mark = data[1];
+            int length = Integer.parseInt(data[2]);
+            switch (data[0]){
+                case "sleeping": wagon = new PassengerWagonForSleeping(Images.imgWagon2, mark, length); break;
+                case "restaurant": {
+                    if(data.length == 4)
+                        wagon = new PassengerWagonRestaurant(Images.imgWagon3, mark, length, data[3]);
+                } break;
+                case "beds": {
+                    if(data.length == 4){
+                        int numberOfBeds = Integer.parseInt(data[3]);
+                        wagon = new PassengerWagonWithBeds(Images.imgWagon1, mark, length, numberOfBeds);
+                    }
+                } break;
+                case "seats": {
+                    if(data.length == 4){
+                        int numberOfSeats = Integer.parseInt(data[3]);
+                        wagon = new PassengerWagonWithSeats(Images.imgWagon1, mark, length, numberOfSeats);
+                    }
+                } break;
+                case "cargo": {
+                    if(data.length == 4){
+                        int loadCapacity = Integer.parseInt(data[3]);
+                        wagon = new CargoWagon(Images.imgWagon5, mark, length, loadCapacity);
+                    }
+                } break;
+                case "special":
+                default: wagon = new SpecialWagon(Images.imgWagon4, mark, length);
+            }
         }
 
         return wagon;

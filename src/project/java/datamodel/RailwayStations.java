@@ -33,7 +33,6 @@ public class RailwayStations {
         return positions;
     }
 
-    //zatvara odredjene sine (trebace kad se neka kompozicija vec krece u suprotnom smijeru, pa su zauzete sine za trenutnu komp.)
     public synchronized static Set<Position> closeRailroad(Set<Position> railroad){
         Set<Position>temp = new HashSet<>(railroadSystem);
         for(Position p : railroad)

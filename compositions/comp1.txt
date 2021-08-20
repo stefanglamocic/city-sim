@@ -1,0 +1,6 @@
+500,A,B
+locomotive,a,10,passenger,diesel
+seats,s1,12,20
+sleeping,s2,13
+restaurant,res11,15,jela s rostilja
+special,s3,20

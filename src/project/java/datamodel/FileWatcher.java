@@ -2,12 +2,14 @@ package project.java.datamodel;
 
 import javafx.application.Platform;
 import project.java.Controller;
+import project.java.Main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -36,7 +38,7 @@ public class FileWatcher implements Runnable{
                         try(InputStream inputStream = new FileInputStream(file.toString())){
                             controller.properties.load(inputStream);
                         }catch (IOException e){
-                            //logger
+                            Main.logger.log(Level.SEVERE, "File error, can't read properties.", e);
                         }
                         controller.loadProperties();
                         int lastCount = controller.carsGeneratedLeft + controller.carsGeneratedMiddle + controller.carsGeneratedRight;
@@ -49,7 +51,7 @@ public class FileWatcher implements Runnable{
                             try{
                                 Thread.sleep(2000);
                             }catch (InterruptedException e){
-                                //logger
+                                Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                             }
                             controller.initializeComposition(file.toFile());
                         });
@@ -58,7 +60,7 @@ public class FileWatcher implements Runnable{
                 }
             }
         }catch (Exception e){
-            //logger
+            Main.logger.log(Level.SEVERE, "File watcher error", e);
         }
     }
 
@@ -70,7 +72,7 @@ public class FileWatcher implements Runnable{
                 try{
                     Thread.sleep(2000);
                 }catch (InterruptedException e){
-                    //logger
+                    Main.logger.log(Level.WARNING, "Thread interrupted.", e);
                 }
             }
         });

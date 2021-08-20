@@ -13,7 +13,7 @@ public abstract class RailwayVehicle extends Vehicle implements Serializable {
 
     public RailwayVehicle(Image image, String mark){
         this.mark = mark;
-        i = j = -1;
+        i = j = 0;
         setImage(image);
         setFitWidth(30);
         setPreserveRatio(true);
